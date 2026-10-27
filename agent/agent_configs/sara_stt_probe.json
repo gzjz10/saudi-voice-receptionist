@@ -1,0 +1,42 @@
+{
+  "name": "Sara STT probe - Phase 0",
+  "conversation_config": {
+    "agent": {
+      "language": "ar",
+      "first_message": "هلا، تفضلوا",
+      "prompt": {
+        "llm": "gemini-2.5-flash",
+        "prompt": "أنتِ أداة اختبار لتحويل الكلام إلى نص. مهما قال المتصل، ردي بكلمة وحدة بس: تمام\nلا تسألين ولا تشرحين ولا تضيفين أي كلمة ثانية.\n",
+        "temperature": 0.0
+      }
+    },
+    "asr": {
+      "provider": "scribe_realtime",
+      "quality": "high"
+    },
+    "tts": {
+      "model_id": "eleven_v4_turbo",
+      "stability": 0.5,
+      "similarity_boost": 0.8,
+      "speed": 1.0,
+      "text_normalisation_type": "system_prompt"
+    },
+    "conversation": {
+      "text_only": false,
+      "max_duration_seconds": 240
+    }
+  },
+  "platform_settings": {
+    "privacy": {
+      "retention_days": 30
+    },
+    "call_limits": {
+      "daily_limit": 20,
+      "agent_concurrency_limit": 2
+    }
+  },
+  "tags": [
+    "phase0",
+    "stt-probe"
+  ]
+}

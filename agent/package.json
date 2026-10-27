@@ -1,0 +1,8 @@
+{
+  "name": "saudi-voice-receptionist-agent",
+  "private": true,
+  "description": "ElevenLabs agent config as code for Sara. CLI pinned; run as `npx elevenlabs ...` from this folder after `npm ci`.",
+  "devDependencies": {
+    "@elevenlabs/cli": "1.7.1"
+  }
+}

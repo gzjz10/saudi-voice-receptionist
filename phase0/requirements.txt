@@ -1,0 +1,12 @@
+# Phase 0b helper scripts (find_voices.py, tts_samples.py). Python 3.12.
+# Pins checked on PyPI 2026-10-27:
+#   elevenlabs 2.74.1  (uploaded 2026-10-20; method names verified by introspecting this exact version)
+#   python-dotenv 1.2.4 (uploaded 2026-10-01)
+# Windows note: elevenlabs 2.74.1 contains a 184-char file path. Installed into
+# <repo>\.venv on this laptop the full path is 265 chars, over the 260 limit
+# (LongPathsEnabled = 0), so pip fails. Run these scripts on the Mac, or on
+# Windows create the venv at a short path (e.g. C:\venvs\svr).
+elevenlabs==2.74.1
+python-dotenv==1.2.4
+# Test runner for phase0/test_phase0.py (optional; the file also runs as plain `python phase0/test_phase0.py`).
+pytest==9.1.1

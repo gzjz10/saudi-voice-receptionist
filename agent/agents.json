@@ -1,0 +1,10 @@
+{
+  "agents": [
+    {
+      "config": "agent_configs/sara.json"
+    },
+    {
+      "config": "agent_configs/sara_stt_probe.json"
+    }
+  ]
+}

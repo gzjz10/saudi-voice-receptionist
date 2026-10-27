@@ -4,5 +4,6 @@ __pycache__/
 *.db
 evals/results/**/audio/
 phase0/recordings/
+phase0/samples/
 node_modules/
 .DS_Store
