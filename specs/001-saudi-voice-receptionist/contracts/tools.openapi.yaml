@@ -1,0 +1,403 @@
+openapi: 3.1.0
+info:
+  title: Sara tools backend (webhook tools for the voice agent)
+  version: 0.1.0-draft
+  description: |
+    Contract for the webhook tools the voice agent calls (plan.md §7 as amended by
+    reviews/plan-review.md, amendments 3-6 and M12, M18).
+
+    The source plan lists 5 tools. Review amendment 3 adds `quote_order`, so 6 are defined
+    here. The read-back may speak only values returned by `quote_order`.
+
+    Conventions:
+    - Every endpoint is `POST /tools/<name>` with JSON in and out, and requires the
+      `X-Tool-Secret` header.
+    - Status codes: 401 when the secret is missing or wrong (compared with
+      `hmac.compare_digest`); 413 above an 8 KB body; 422 only for schema violations; 429 when
+      rate-limited (~30 req/min per IP). Every business outcome, error included, is HTTP 200
+      with the `Envelope`.
+    - Money is integer halalas (1 SAR = 100 halalas). Every number a caller will hear has a
+      `*_spoken_ar` field, so TTS never reads raw digits.
+    - `conversation_id` is bound by the platform from the dynamic variable
+      `system__conversation_id`; the LLM never fills it. Likewise `now` comes from
+      `system__time`. The binding syntax is confirmed in the CLI 1.7.1 tool schema
+      (`dynamic_variable` on a body property, see research.md R12). The live behaviour is
+      UNVERIFIED until Phase 2.
+    - At most 3 product matches; exactly 2 options when `needs_clarification`.
+    - All data is fake demo data.
+servers:
+  - url: "{TOOLS_BASE_URL}"
+    description: Local FastAPI app (http://localhost:8000) or the cloudflared quick-tunnel URL
+      written to .env by scripts/tunnel.sh
+    variables:
+      TOOLS_BASE_URL:
+        default: http://localhost:8000
+security:
+  - ToolSecret: []
+paths:
+  /tools/get_product:
+    post:
+      operationId: get_product
+      summary: Find a product by what the caller said (price, stock, unit).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/GetProductRequest" }
+            example: { query: "الصحون الزجاج", conversation_id: "conv_example" }
+      responses:
+        "200":
+          description: Envelope. status = ok | needs_clarification | not_found
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GetProductResponse" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "413": { $ref: "#/components/responses/TooLarge" }
+        "422": { $ref: "#/components/responses/SchemaError" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+  /tools/get_store_info:
+    post:
+      operationId: get_store_info
+      summary: Spoken store facts for one topic.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/GetStoreInfoRequest" }
+      responses:
+        "200":
+          description: Envelope. status = ok | error (error_code unknown_topic)
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GetStoreInfoResponse" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "413": { $ref: "#/components/responses/TooLarge" }
+        "422": { $ref: "#/components/responses/SchemaError" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+  /tools/quote_order:
+    post:
+      operationId: quote_order
+      summary: Side-effect-free price of a basket; the only source of read-back totals.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/QuoteOrderRequest" }
+            example:
+              items: [{ product_id: "CLN-002", qty: 3 }]
+              fulfillment: pickup
+              time_slot: "بكرة العصر"
+              conversation_id: conv_example
+      responses:
+        "200":
+          description: Envelope. status = ok | error
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/QuoteOrderResponse" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "413": { $ref: "#/components/responses/TooLarge" }
+        "422": { $ref: "#/components/responses/SchemaError" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+  /tools/create_order:
+    post:
+      operationId: create_order
+      summary: Create the order from a quote after a clear yes. Idempotent on (conversation_id, quote_id).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CreateOrderRequest" }
+      responses:
+        "200":
+          description: Envelope. status = ok (duplicate true on retry) | error
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CreateOrderResponse" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "413": { $ref: "#/components/responses/TooLarge" }
+        "422": { $ref: "#/components/responses/SchemaError" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+  /tools/check_order_status:
+    post:
+      operationId: check_order_status
+      summary: Status by numeric order id, or the 2 latest orders by phone.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CheckOrderStatusRequest" }
+      responses:
+        "200":
+          description: Envelope. status = ok | not_found | error
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/CheckOrderStatusResponse" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "413": { $ref: "#/components/responses/TooLarge" }
+        "422": { $ref: "#/components/responses/SchemaError" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+  /tools/escalate_to_human:
+    post:
+      operationId: escalate_to_human
+      summary: Open a callback ticket and return the line Sara speaks.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EscalateRequest" }
+      responses:
+        "200":
+          description: Envelope. status = ok
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EscalateResponse" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "413": { $ref: "#/components/responses/TooLarge" }
+        "422": { $ref: "#/components/responses/SchemaError" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+components:
+  securitySchemes:
+    ToolSecret:
+      type: apiKey
+      in: header
+      name: X-Tool-Secret
+      description: Stored on ElevenLabs as a Secret and referenced by secret_id in
+        request_headers; never a literal in a committed file. Rotated per demo session.
+  responses:
+    Unauthorized:
+      description: Missing or wrong X-Tool-Secret. The attempt is logged without header values.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties: { detail: { type: string, const: unauthorized } }
+    TooLarge:
+      description: Body over 8 KB.
+    SchemaError:
+      description: Body failed schema validation (FastAPI/Pydantic default shape).
+    RateLimited:
+      description: Over ~30 requests per minute from one IP.
+  schemas:
+    ConversationId:
+      type: string
+      maxLength: 128
+      description: Bound from the dynamic variable system__conversation_id, never LLM-filled.
+    Phone:
+      type: string
+      maxLength: 32
+      description: Free form as heard (+966, 966, 5XXXXXXXX, Arabic-Indic digits). The server
+        normalizes it to ^05\d{8}$ or returns error_code invalid_phone.
+    ProductId:
+      type: string
+      pattern: "^(KIT|CLN|PLA|GFT|STA)-\\d{3}$"
+    Halalas:
+      type: integer
+      minimum: 0
+    Envelope:
+      type: object
+      required: [status, say_ar]
+      properties:
+        status:
+          type: string
+          enum: [ok, error, needs_clarification, not_found]
+        error_code:
+          type: [string, "null"]
+          enum:
+            - null
+            - not_found
+            - unknown_topic
+            - unknown_product
+            - invalid_qty
+            - invalid_phone
+            - out_of_stock
+            - area_not_served
+            - below_minimum
+            - outside_hours
+            - missing_field
+            - quote_not_found
+            - quote_mismatch
+        say_ar:
+          type: string
+          description: Ready-to-speak Saudi Arabic line for this outcome (plural address).
+        say_en:
+          type: [string, "null"]
+          description: English line for an English-only caller.
+    ItemIn:
+      type: object
+      required: [product_id, qty]
+      additionalProperties: false
+      properties:
+        product_id: { $ref: "#/components/schemas/ProductId" }
+        qty: { type: integer, minimum: 1, maximum: 20 }
+    ProductMatch:
+      type: object
+      required: [product_id, name_ar, price_halalas, price_spoken_ar, in_stock, unit]
+      properties:
+        product_id: { $ref: "#/components/schemas/ProductId" }
+        name_ar: { type: string }
+        price_halalas: { $ref: "#/components/schemas/Halalas" }
+        price_spoken_ar: { type: string, examples: ["تسعة ريال وخمسة وسبعين هللة"] }
+        in_stock: { type: boolean }
+        unit: { type: string }
+    GetProductRequest:
+      type: object
+      required: [query]
+      additionalProperties: false
+      properties:
+        query: { type: string, minLength: 1, maxLength: 120, description: Text as heard. }
+        conversation_id: { $ref: "#/components/schemas/ConversationId" }
+    GetProductResponse:
+      allOf:
+        - $ref: "#/components/schemas/Envelope"
+        - type: object
+          properties:
+            matches:
+              type: array
+              maxItems: 3
+              items: { $ref: "#/components/schemas/ProductMatch" }
+            needs_clarification: { type: boolean }
+            clarify_options_ar:
+              type: array
+              maxItems: 2
+              items: { type: string }
+            suggestions:
+              type: array
+              maxItems: 2
+              items: { $ref: "#/components/schemas/ProductMatch" }
+              description: Nearest in-stock alternatives (out of stock or not found).
+    GetStoreInfoRequest:
+      type: object
+      required: [topic]
+      additionalProperties: false
+      properties:
+        topic:
+          type: string
+          enum: [hours, location, delivery, returns, phone]
+        day:
+          type: [string, "null"]
+          enum: [null, sat, sun, mon, tue, wed, thu, fri]
+          description: Optional, for "Friday hours" questions.
+        conversation_id: { $ref: "#/components/schemas/ConversationId" }
+    GetStoreInfoResponse:
+      allOf:
+        - $ref: "#/components/schemas/Envelope"
+        - type: object
+          properties:
+            text_ar: { type: string }
+            text_en: { type: [string, "null"] }
+            map_url: { type: [string, "null"] }
+            served_areas_ar: { type: array, items: { type: string } }
+    QuoteOrderRequest:
+      type: object
+      required: [items, fulfillment, time_slot]
+      additionalProperties: false
+      properties:
+        items:
+          type: array
+          minItems: 1
+          maxItems: 10
+          items: { $ref: "#/components/schemas/ItemIn" }
+        fulfillment: { type: string, enum: [pickup, delivery] }
+        area: { type: [string, "null"], maxLength: 40, description: Required when delivery. }
+        time_slot: { type: string, maxLength: 40, description: As heard, e.g. «بكرة العصر». }
+        now: { type: [string, "null"], description: Bound from system__time. }
+        conversation_id: { $ref: "#/components/schemas/ConversationId" }
+    QuoteLine:
+      type: object
+      required: [product_id, name_ar, qty, qty_spoken_ar, unit_price_halalas, line_total_halalas]
+      properties:
+        product_id: { $ref: "#/components/schemas/ProductId" }
+        name_ar: { type: string }
+        qty: { type: integer, minimum: 1, maximum: 20 }
+        qty_spoken_ar: { type: string, examples: ["ثلاث علب"] }
+        unit_price_halalas: { $ref: "#/components/schemas/Halalas" }
+        line_total_halalas: { $ref: "#/components/schemas/Halalas" }
+    QuoteOrderResponse:
+      allOf:
+        - $ref: "#/components/schemas/Envelope"
+        - type: object
+          properties:
+            quote_id: { type: string }
+            lines: { type: array, items: { $ref: "#/components/schemas/QuoteLine" } }
+            subtotal_halalas: { $ref: "#/components/schemas/Halalas" }
+            delivery_fee_halalas: { $ref: "#/components/schemas/Halalas" }
+            total_halalas: { $ref: "#/components/schemas/Halalas" }
+            total_spoken_ar: { type: string, examples: ["سبعطعش ريال وخمسة وعشرين هللة"] }
+            below_minimum: { type: boolean }
+            slot: { $ref: "#/components/schemas/ResolvedSlot" }
+            served_areas_ar: { type: array, items: { type: string } }
+    ResolvedSlot:
+      type: object
+      required: [date, window, time_slot_spoken_ar]
+      properties:
+        date: { type: string, format: date, description: Asia/Riyadh. }
+        window: { type: string, enum: [morning, noon, afternoon, evening, night] }
+        time_slot_spoken_ar: { type: string }
+    CreateOrderRequest:
+      type: object
+      required: [quote_id, customer_name, phone]
+      additionalProperties: false
+      properties:
+        quote_id: { type: string, maxLength: 64 }
+        customer_name: { type: string, minLength: 1, maxLength: 40 }
+        phone: { $ref: "#/components/schemas/Phone" }
+        conversation_id: { $ref: "#/components/schemas/ConversationId" }
+    CreateOrderResponse:
+      allOf:
+        - $ref: "#/components/schemas/Envelope"
+        - type: object
+          properties:
+            order_id: { type: string, pattern: "^\\d{4}$" }
+            order_id_spoken_ar: { type: string, examples: ["أربعة، ثمانية، اثنين، واحد"] }
+            phone_spoken_ar: { type: string }
+            total_halalas: { $ref: "#/components/schemas/Halalas" }
+            total_spoken_ar: { type: string }
+            duplicate: { type: boolean, description: true when the same (conversation_id, quote_id) was already ordered. }
+    CheckOrderStatusRequest:
+      type: object
+      additionalProperties: false
+      oneOf:
+        - required: [order_id]
+        - required: [phone]
+      properties:
+        order_id: { type: string, pattern: "^\\d{4}$" }
+        phone: { $ref: "#/components/schemas/Phone" }
+        conversation_id: { $ref: "#/components/schemas/ConversationId" }
+    OrderStatusItem:
+      type: object
+      required: [order_id, status, status_ar, order_id_spoken_ar]
+      properties:
+        order_id: { type: string, pattern: "^\\d{4}$" }
+        order_id_spoken_ar: { type: string }
+        status:
+          type: string
+          enum: [received, preparing, ready, out_for_delivery, delivered, cancelled]
+        status_ar: { type: string }
+    CheckOrderStatusResponse:
+      allOf:
+        - $ref: "#/components/schemas/Envelope"
+        - type: object
+          properties:
+            orders:
+              type: array
+              maxItems: 2
+              items: { $ref: "#/components/schemas/OrderStatusItem" }
+    EscalateRequest:
+      type: object
+      required: [reason, summary]
+      additionalProperties: false
+      properties:
+        reason:
+          type: string
+          enum: [asked_for_human, angry, not_understood, cancel_request, other]
+        summary: { type: string, minLength: 1, maxLength: 300 }
+        customer_name: { type: [string, "null"], maxLength: 40 }
+        phone: { oneOf: [{ $ref: "#/components/schemas/Phone" }, { type: "null" }] }
+        conversation_id: { $ref: "#/components/schemas/ConversationId" }
+    EscalateResponse:
+      allOf:
+        - $ref: "#/components/schemas/Envelope"
+        - type: object
+          properties:
+            ticket_id: { type: string }
+            callback_text_ar: { type: string }
