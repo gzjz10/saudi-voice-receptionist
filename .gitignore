@@ -1,0 +1,8 @@
+.env
+.venv/
+__pycache__/
+*.db
+evals/results/**/audio/
+phase0/recordings/
+node_modules/
+.DS_Store
