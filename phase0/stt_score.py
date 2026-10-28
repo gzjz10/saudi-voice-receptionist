@@ -597,7 +597,7 @@ def report(rows: list[dict], allow_single: bool = False, out=None) -> bool:
     complete = [v for v in verdicts if v.complete]
     best = max(complete, key=lambda v: (v.passed, sum(ok for _, ok, _ in v.checks), v.entity_acc),
                default=None)
-    print("\n== STT GATE (plan-review.md G.3, thresholds pending Ahmed's confirmation) ==", file=out)
+    print("\n== STT GATE (plan-review.md G.3, thresholds confirmed by Ahmed 2026-10-28) ==", file=out)
     if best is None:
         print("STT GATE: INCOMPLETE - no provider has all 20 clips transcribed.", file=out)
         return False

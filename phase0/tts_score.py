@@ -144,7 +144,7 @@ def report(ratings: list[dict], key: list[dict], rnd: str, out=None) -> str:
         flag = "" if s["complete"] else "  (incomplete)"
         print(f"{v:<6} {m:<24} {s['n']:>2}/{s['expected']:<2} {s['mean']:>5.2f}  {rm:<22} {nums}{flag}", file=out)
     vd, pair, why = verdict(stats, rnd)
-    print(f"\nTTS GATE ({rnd}, G.2 thresholds pending Ahmed's confirmation): {vd}", file=out)
+    print(f"\nTTS GATE ({rnd}, G.2 thresholds confirmed by Ahmed 2026-10-28): {vd}", file=out)
     if pair:
         s = stats[pair]
         print(f"  pair: voice {pair[0]} ({s['voice_id'] or 'id unknown'}), model {pair[1]} - {why}", file=out)
