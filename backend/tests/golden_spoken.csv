@@ -1,42 +1,42 @@
 # golden_spoken.csv: spoken Saudi Arabic for every number a caller hears.
 # register: white Saudi colloquial, plural address (docs/phase0/tts_script.md)
 # signed_lines: tts_line_2 .. tts_line_6 are signed by Ahmed 2026-10-28 (TTS lines 2-6)
-# signed_off_rest: no  <- Ahmed sets this to "yes <date>" after reviewing every other row (T072)
+# signed_off_rest: yes 2026-10-28 (Ahmed approved all draft rows as written, T072)
 kind,input,expected,source
 money,975,تسعة ريال وخمسة وسبعين هللة,tts_line_2
 money,1725,سبعطعش ريال وخمسة وعشرين هللة,tts_line_3
 money,11700,مية وسبعطعش ريال,tts_line_4
 phone,0551234567,صفر خمسة خمسة، واحد اثنين ثلاثة، أربعة خمسة ستة سبعة,tts_line_5
 order_id,4821,أربعة، ثمانية، اثنين، واحد,tts_line_6
-money,100,ريال واحد,draft
-money,200,ريالين,draft
-money,300,ثلاثة ريال,draft
-money,1000,عشرة ريال,draft
-money,1100,احدعش ريال,draft
-money,1700,سبعطعش ريال,draft
-money,2500,خمسة وعشرين ريال,draft
-money,9900,تسعة وتسعين ريال,draft
-money,10000,مية ريال,draft
-money,20000,ميتين ريال,draft
-money,25,خمسة وعشرين هللة,draft
-money,50,خمسين هللة,draft
-money,75,خمسة وسبعين هللة,draft
-money,575,خمسة ريال وخمسة وسبعين هللة,draft
-money,1475,أربعطعش ريال وخمسة وسبعين هللة,draft
-money,6625,ستة وستين ريال وخمسة وعشرين هللة,draft
-money,150000,ألف وخمسمية ريال,draft
-qty,1|علبة|f,علبة وحدة,draft
-qty,2|علبة|f,علبتين,draft
-qty,3|علبة|f,ثلاث علب,draft
-qty,11|علبة|f,احدعش علبة,draft
-qty,12|علبة|f,اثنعش علبة,draft
-qty,1|طقم|m,طقم واحد,draft
-qty,2|طقم|m,طقمين,draft
-qty,3|طقم|m,ثلاثة أطقم,draft
-qty,11|طقم|m,احدعش طقم,draft
-qty,1|حبة|f,حبة وحدة,draft
-qty,2|حبة|f,حبتين,draft
-qty,3|حبة|f,ثلاث حبات,draft
-qty,10|حبة|f,عشر حبات,draft
-qty,11|حبة|f,احدعش حبة,draft
-qty,20|حبة|f,عشرين حبة,draft
+money,100,ريال واحد,signed
+money,200,ريالين,signed
+money,300,ثلاثة ريال,signed
+money,1000,عشرة ريال,signed
+money,1100,احدعش ريال,signed
+money,1700,سبعطعش ريال,signed
+money,2500,خمسة وعشرين ريال,signed
+money,9900,تسعة وتسعين ريال,signed
+money,10000,مية ريال,signed
+money,20000,ميتين ريال,signed
+money,25,خمسة وعشرين هللة,signed
+money,50,خمسين هللة,signed
+money,75,خمسة وسبعين هللة,signed
+money,575,خمسة ريال وخمسة وسبعين هللة,signed
+money,1475,أربعطعش ريال وخمسة وسبعين هللة,signed
+money,6625,ستة وستين ريال وخمسة وعشرين هللة,signed
+money,150000,ألف وخمسمية ريال,signed
+qty,1|علبة|f,علبة وحدة,signed
+qty,2|علبة|f,علبتين,signed
+qty,3|علبة|f,ثلاث علب,signed
+qty,11|علبة|f,احدعش علبة,signed
+qty,12|علبة|f,اثنعش علبة,signed
+qty,1|طقم|m,طقم واحد,signed
+qty,2|طقم|m,طقمين,signed
+qty,3|طقم|m,ثلاثة أطقم,signed
+qty,11|طقم|m,احدعش طقم,signed
+qty,1|حبة|f,حبة وحدة,signed
+qty,2|حبة|f,حبتين,signed
+qty,3|حبة|f,ثلاث حبات,signed
+qty,10|حبة|f,عشر حبات,signed
+qty,11|حبة|f,احدعش حبة,signed
+qty,20|حبة|f,عشرين حبة,signed

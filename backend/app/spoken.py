@@ -1,7 +1,7 @@
 """Numbers -> spoken Saudi colloquial Arabic (white Saudi register, plural address).
 
-The register follows the signed TTS lines 2-6 (docs/phase0/tts_script.md); the rest of
-backend/tests/golden_spoken.csv is a draft until Ahmed signs it (T072).
+The register follows the signed TTS lines 2-6 (docs/phase0/tts_script.md); every row of
+backend/tests/golden_spoken.csv is signed by Ahmed (T072, 2026-10-28).
 """
 
 from __future__ import annotations

@@ -145,7 +145,7 @@ three human checks remain.
 | p95 < 300 ms over 100 calls per tool | PASS in-process (`bash scripts/latency.sh`): worst p95 3.2 ms. Live uvicorn: 200 with secret, 401 without, and the 30/min limiter returned 429 as designed |
 | Tunnel 200 with secret / 401 without, from a second network | PASS 2026-10-28 — Ahmed started `dev.sh` + `tunnel.sh` (quick tunnel); `bash scripts/tunnel_check.sh` through the public trycloudflare URL: all 6 tools 200 with the secret, 401 without. Whether the Mac was on the phone hotspot is per Ahmed |
 | Fresh clone green on Windows | **BLOCKED-human** (T075) |
-| `golden_spoken.csv` signed | **BLOCKED-human** (T072): TTS lines 2–6 rows are signed; the other 32 rows are drafts |
+| `golden_spoken.csv` signed | PASS 2026-10-28 — Ahmed approved all 32 draft rows as written (T072) |
 
 Decisions: Arabic only (`say_en`/`text_en` removed from the contract); store name مقاضينا as in
 the signed TTS line 1, with the demo disclaimer; delivery fee 15 SAR and minimum 50 SAR are fake
