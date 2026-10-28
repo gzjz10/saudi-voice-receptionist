@@ -63,12 +63,19 @@ def test_tts_script_md_matches_builtin_lines():
     assert sum(len(t) for *_, t in md) * 3 * 2 == 2022
 
 
-def test_agent_config_has_no_voice_id_or_tools():
+def winner_voice_id():
+    """Slot A of the voice_selection.md ID table: the 0b winner (Ahmed, 2026-10-28)."""
+    text = (REPO / "docs" / "phase0" / "voice_selection.md").read_text(encoding="utf-8")
+    import re
+    return re.search(r"^\| A \| `([A-Za-z0-9]{20})`", text, re.M).group(1)
+
+
+def test_agent_config_has_winner_voice_and_no_tools():
     for name in ("sara.json", "sara_stt_probe.json"):
         cfg = json.loads((REPO / "agent" / "agent_configs" / name).read_text(encoding="utf-8"))
         cc = cfg["conversation_config"]
         assert cc["agent"]["language"] == "ar"
-        assert "voice_id" not in cc["tts"]
+        assert cc["tts"].get("voice_id") == winner_voice_id()
         assert not cc["agent"]["prompt"].get("tool_ids") and not cc["agent"]["prompt"].get("tools")
     sara = json.loads((REPO / "agent" / "agent_configs" / "sara.json").read_text(encoding="utf-8"))
     assert sara["conversation_config"]["agent"]["prompt"]["prompt"] == \
@@ -86,6 +93,8 @@ def test_no_voice_ids_in_tracked_phase0_docs():
         if p.name in allowed:
             continue
         hits = [h for h in rx.findall(p.read_text(encoding="utf-8")) if not h.isalpha() and not h.isdigit()]
+        if p.name == "sara.json":
+            hits = [h for h in hits if h != winner_voice_id()]
         assert not hits, f"{p.relative_to(REPO)} contains id-like token(s): {hits}"
 
 

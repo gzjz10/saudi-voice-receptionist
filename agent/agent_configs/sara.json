@@ -16,6 +16,7 @@
     },
     "tts": {
       "model_id": "eleven_v4_turbo",
+      "voice_id": "FZeLZd39ejvLgzR2gY0t",
       "stability": 0.5,
       "similarity_boost": 0.8,
       "speed": 1.0,

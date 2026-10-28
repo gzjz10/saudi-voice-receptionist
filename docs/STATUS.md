@@ -48,8 +48,8 @@ when Phase 1 planning starts.
 | Starter plan bought, key in `.env` on the Mac | PASS (2026-10-28; free key upgraded to Starter) |
 | 3 female Saudi/Gulf voices found via the API, IDs recorded from the response only | DEVIATION: 1 voice (Nora S) after Ahmed rejected the other library candidates; see `voice_selection.md` |
 | 48 clips (3 voices × 2 models × 8 lines) with the agent's exact voice settings, blind + seeded | DONE as 16 clips (1 voice × 2 models × 8), seed 4821; rating page `phase0/make_rating_page.py` |
-| 3 independent blind raters (Ahmed + 2 native Saudi, ≥ 1 Al-Ahsa), 1–5 scale + number y/n | BLOCKED-human |
-| Best pair mean ≥ 4.0, every rater ≥ 3.0 on it, all number lines right → GO | not evaluated |
+| 3 independent blind raters (Ahmed + 2 native Saudi, ≥ 1 Al-Ahsa), 1–5 scale + number y/n | WAIVED: Ahmed rated alone (R1) and waived R2/R3, 2026-10-28 |
+| Best pair mean ≥ 4.0, every rater ≥ 3.0 on it, all number lines right → GO | GO on R1 only: Nora S + eleven_v4_turbo 4.38, numbers 5/5; set in both agent configs |
 | RETRY (3.5–3.99, once, 45 min) / NO-GO (< 3.5 or a number line wrong on all voices) / Azure fallback | not evaluated |
 
 ### 0b — STT gate (reviews §G.3)

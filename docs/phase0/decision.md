@@ -2,9 +2,13 @@
 
 Filled step by step during Phase 0b (`phase0/README.md`). Nothing below is final until signed.
 
-TTS gate: not run yet
+TTS gate: **GO by Ahmed's decision (2026-10-28), 1 rater instead of 3.** R1 (Ahmed) blind ratings, seed 4821:
+  A/eleven_v4_turbo mean 4.38, numbers 5/5 · A/eleven_flash_v2_5 mean 4.25, numbers 5/5
+  (`docs/phase0/tts_ratings_R1.csv`, scored by `phase0/tts_score.py`, which reports INCOMPLETE for 1 rater).
+  Ahmed waived raters R2/R3 and chose eleven_v4_turbo. Risk: no second Saudi / Al-Ahsa ear on the voice;
+  re-open the TTS gate if callers in Phase 2–3 call the voice non-Saudi (R1 noted clip 010 sounded non-Saudi).
 STT gate: not run yet
-Winner: voice_id=<from API> model_id=<...> stability=<...> similarity_boost=<...> speed=<...>
+Winner: voice_id=FZeLZd39ejvLgzR2gY0t (Nora S - Saudi Natural & Calm) model_id=eleven_v4_turbo stability=0.5 similarity_boost=0.8 speed=1.0
 asr.provider=<...>  asr.keywords=<...|none>  LLM=gemini-2.5-flash  CLI=@elevenlabs/cli 1.7.1  SDK=elevenlabs 2.74.1
 Blind seed: 4821 (16 clips: voice A = Nora S `FZeLZd39ejvLgzR2gY0t` × eleven_v4_turbo, eleven_flash_v2_5 × 8 lines; 674 characters)   Raters: R1 Ahmed, R2 <city only>, R3 <city only>   STT speakers: S1 Ahmed, S2 <relation only>
 Plan: started on Free, upgraded to **Starter** on 2026-10-28 for Nora S (`free_users_allowed=False`). After the
