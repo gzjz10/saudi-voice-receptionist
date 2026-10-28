@@ -7,3 +7,6 @@ phase0/recordings/
 phase0/samples/
 node_modules/
 .DS_Store
+backend/logs/
+backend/data/
+.pytest_cache/

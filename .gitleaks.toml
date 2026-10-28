@@ -1,0 +1,13 @@
+# gitleaks config: default rules plus the project's own secrets.
+[extend]
+useDefault = true
+
+[[rules]]
+id = "elevenlabs-api-key"
+description = "ElevenLabs API key"
+regex = '''sk_[a-f0-9]{48}'''
+
+[[rules]]
+id = "tool-secret-assignment"
+description = "TOOL_SECRET with a value"
+regex = '''TOOL_SECRET\s*=\s*\S{16,}'''

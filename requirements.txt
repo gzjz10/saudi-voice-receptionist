@@ -1,0 +1,12 @@
+# Phase 1 tools backend + tests. Python 3.12. Pins checked on PyPI 2026-10-28 (newest release
+# at least 14 days old; see specs/001-saudi-voice-receptionist/research.md R11).
+fastapi==0.143.1
+pydantic==2.14.1
+uvicorn==0.54.0
+rapidfuzz==3.14.6
+httpx==0.28.1
+PyYAML==6.0.3
+jsonschema==4.26.0
+pytest==9.1.1
+# zoneinfo needs tzdata for Asia/Riyadh on Windows.
+tzdata==2026.5

@@ -1,0 +1,60 @@
+{
+  "store_name_ar": "مقاضينا",
+  "store_name_en": "Maqadeena",
+  "demo_disclaimer_ar": "نسخة تجريبية، الأسعار غير حقيقية",
+  "hours": {
+    "sat_thu": {
+      "open": "09:00",
+      "close": "23:00"
+    },
+    "fri": {
+      "open": "16:00",
+      "close": "23:00"
+    }
+  },
+  "hours_spoken_ar": {
+    "sat_thu": "من السبت للخميس نفتح من تسعة الصبح لين احدعش بالليل",
+    "fri": "يوم الجمعة نفتح من أربعة العصر لين احدعش بالليل"
+  },
+  "location_ar": "حنا في الهفوف، حي المحمدية، على شارع الملك عبدالله",
+  "map_url": "https://maps.example.com/demo-store",
+  "delivery": {
+    "areas_ar": [
+      "الهفوف",
+      "المبرز",
+      "العيون",
+      "الجفر"
+    ],
+    "fee_halalas": 1500,
+    "min_order_halalas": 5000
+  },
+  "returns_ar": "تقدرون ترجعون أو تبدلون خلال سبعة أيام مع الفاتورة، بشرط المنتج يكون بحالته",
+  "phone": "0130000000",
+  "time_windows": {
+    "morning": {
+      "from": "09:00",
+      "to": "12:00",
+      "spoken_ar": "الصبح"
+    },
+    "noon": {
+      "from": "12:00",
+      "to": "15:00",
+      "spoken_ar": "الظهر"
+    },
+    "afternoon": {
+      "from": "15:00",
+      "to": "18:00",
+      "spoken_ar": "العصر"
+    },
+    "evening": {
+      "from": "18:00",
+      "to": "21:00",
+      "spoken_ar": "المغرب"
+    },
+    "night": {
+      "from": "21:00",
+      "to": "23:00",
+      "spoken_ar": "الليل"
+    }
+  }
+}

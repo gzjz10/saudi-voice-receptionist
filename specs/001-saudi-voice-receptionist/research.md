@@ -256,6 +256,16 @@ Anything not confirmed by either is marked **UNVERIFIED** and has a named check 
   `max(token_sort_ratio, 0.9·partial_ratio)` for scoring; `token_set_ratio` only to detect
   ambiguity). The leader confirmed the §7 pipeline fails its own test words on 3.14.6.
 
+- **Phase 1 decision (2026-10-28, Mac):** newest release ≥ 14 days old on PyPI that day:
+  fastapi **0.143.1** (2026-10-14), pydantic 2.14.1, uvicorn 0.54.0, rapidfuzz 3.14.6, httpx 0.28.1,
+  PyYAML 6.0.3, jsonschema 4.26.0, pytest 9.1.1, plus **tzdata 2026.5** so `zoneinfo` finds
+  Asia/Riyadh on Windows. All in `requirements.txt`. Matcher as built: exact alias phrase first
+  (longest key wins, ties → clarify), else `max(token_sort_ratio, 0.9·partial_ratio)` + 6 points
+  when the head noun matches (stops «صحون» matching «صابون صحون»); ≥ 82 is a match, runner-up
+  within 5 points → clarify with 2 options. 36 golden query pairs in `backend/tests/test_arabic.py`.
+  cloudflared on the Mac: 2026.7.1. gitleaks pinned 8.30.1 (2026-03-21) in
+  `scripts/install_hooks.sh`, not yet installed.
+
 ## R12. Webhook tool binding (Phase 2)
 
 - **Decision**: tool configs set `request_headers.X-Tool-Secret = {"secret_id": "<ElevenLabs secret id>"}`

@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Sara tools backend (webhook tools for the voice agent)
-  version: 0.1.0-draft
+  version: 0.2.0
   description: |
     Contract for the webhook tools the voice agent calls (plan.md §7 as amended by
     reviews/plan-review.md, amendments 3-6 and M12, M18).
@@ -25,6 +25,7 @@ info:
       UNVERIFIED until Phase 2.
     - At most 3 product matches; exactly 2 options when `needs_clarification`.
     - All data is fake demo data.
+    - Arabic only (Ahmed, 2026-10-28): there are no English fields (`say_en`, `text_en` removed).
 servers:
   - url: "{TOOLS_BASE_URL}"
     description: Local FastAPI app (http://localhost:8000) or the cloudflared quick-tunnel URL
@@ -219,16 +220,13 @@ components:
         say_ar:
           type: string
           description: Ready-to-speak Saudi Arabic line for this outcome (plural address).
-        say_en:
-          type: [string, "null"]
-          description: English line for an English-only caller.
     ItemIn:
       type: object
       required: [product_id, qty]
       additionalProperties: false
       properties:
         product_id: { $ref: "#/components/schemas/ProductId" }
-        qty: { type: integer, minimum: 1, maximum: 20 }
+        qty: { type: integer, description: "1-20. Outside that range the tool answers error_code invalid_qty (a business error, not 422)." }
     ProductMatch:
       type: object
       required: [product_id, name_ar, price_halalas, price_spoken_ar, in_stock, unit]
@@ -284,7 +282,6 @@ components:
         - type: object
           properties:
             text_ar: { type: string }
-            text_en: { type: [string, "null"] }
             map_url: { type: [string, "null"] }
             served_areas_ar: { type: array, items: { type: string } }
     QuoteOrderRequest:
