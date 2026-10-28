@@ -76,11 +76,15 @@ def test_agent_config_has_no_voice_id_or_tools():
 
 
 def test_no_voice_ids_in_tracked_phase0_docs():
-    # ElevenLabs voice ids are 20-char base62 strings; none may appear in 0a docs.
+    # ElevenLabs voice ids are 20-char base62 strings. Since 0b step 3 they may appear only in
+    # the ID table of voice_selection.md and in decision.md, copied from find_voices.py output.
     import re
     rx = re.compile(r"\b[A-Za-z0-9]{20}\b")
+    allowed = {"voice_selection.md", "decision.md"}
     for p in [*(REPO / "docs").rglob("*.md"), *(REPO / "docs").rglob("*.csv"),
               REPO / "agent" / "agent_configs" / "sara.json"]:
+        if p.name in allowed:
+            continue
         hits = [h for h in rx.findall(p.read_text(encoding="utf-8")) if not h.isalpha() and not h.isdigit()]
         assert not hits, f"{p.relative_to(REPO)} contains id-like token(s): {hits}"
 
