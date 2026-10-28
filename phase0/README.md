@@ -173,7 +173,7 @@ If the push fails, paste the exact error into `decision.md` and stop.
 
 | Verdict | Next |
 | --- | --- |
-| PASS (best provider: (a) ≥ 18/20 intents + both #10 in English, (b) ≥ 5/6 products, (c) qty 2/2 + order id 2/2, (d) ≤ 2/40 phone digits wrong + ≥ 2/4 exact, (e) #7, #8, #9 all 2/2) | record `asr.provider` winner in both agent configs |
+| PASS (best provider: (a) ≥ 18/20 intents, (b) ≥ 5/6 products, (c) qty 2/2 + order id 2/2, (d) ≤ 2/40 phone digits wrong + ≥ 2/4 exact, (e) #7, #8, #9 all 2/2) | record `asr.provider` winner in both agent configs |
 | FAIL | **once, 30 min:** switch `asr.provider` to the third value, add product names to `asr.keywords`, re-run only the failing clips, re-score |
 | still FAIL → NO-GO | **STT fallback:** Vapi + Azure `ar-SA` STT, keep ElevenLabs `eleven_flash_v2_5` TTS (+3–4 h). Both TTS and STT NO-GO → stop and re-scope |
 

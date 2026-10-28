@@ -21,7 +21,7 @@ Format of each line is `N. label: text` (the script's parser depends on it).
 8. escalate_close: أعتذر منكم، بحوّلكم لموظف يتواصل معكم، شكراً لاتصالكم
 
 Lines 2–6 are the **number lines**: raters also mark "heard the right number" (y/n) on them.
-Line 9 (English, `--with-english`) is optional and is not part of the gate mean.
+The project is Arabic only (Ahmed, 2026-10-28): there is no English line.
 
 Characters: 337 per voice × model pass; 3 voices × 2 models = 2,022 characters for 48 clips
 (check with `python phase0/tts_samples.py --dry-run`).

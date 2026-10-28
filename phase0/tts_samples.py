@@ -6,7 +6,6 @@ style is fixed at 0 because the agent TTS config has no style field).
 
     python phase0/tts_samples.py --dry-run                 # offline: plan + character count, no key
     python phase0/tts_samples.py --voice A=<id> --voice B=<id> --voice C=<id>
-    python phase0/tts_samples.py ... --with-english         # also line 9 (English, not gated)
     python phase0/tts_samples.py ... --blind --seed 4821    # shuffled, blind-labelled copies for raters
     python phase0/tts_samples.py ... --script docs/phase0/tts_script.md   # lines from another file
 
@@ -52,7 +51,6 @@ LINES: list[tuple[int, str, str, str]] = [  # (n, label, language, text)
     (7, "clarify_2_options", "ar", "تقصدون صحون زجاج أو صحون بلاستيك؟"),
     (8, "escalate_close", "ar", "أعتذر منكم، بحوّلكم لموظف يتواصل معكم، شكراً لاتصالكم"),
 ]
-ENGLISH_LINE = (9, "english", "en", "Thanks for calling Maqadeena. How can I help you today?")
 LINE_RE = re.compile(r"^\s*(\d+)\.\s+([^:]+):\s*(.+?)\s*$")
 
 
@@ -100,7 +98,6 @@ def main() -> int:
                     help="candidate voice; label is a short name like A, B, C (repeatable)")
     ap.add_argument("--model", action="append", help=f"TTS model id (repeatable); default {DEFAULT_MODELS}")
     ap.add_argument("--script", type=Path, help="read lines from a `N. label: text` file instead of the built-in 8")
-    ap.add_argument("--with-english", action="store_true", help="add line 9 (English; not part of the gate mean)")
     ap.add_argument("--stability", type=float)
     ap.add_argument("--similarity-boost", type=float)
     ap.add_argument("--speed", type=float)
@@ -114,8 +111,6 @@ def main() -> int:
         sys.stdout.reconfigure(encoding="utf-8")  # Arabic prints correctly on Windows consoles
 
     lines = parse_script(args.script) if args.script else list(LINES)
-    if args.with_english:
-        lines.append(ENGLISH_LINE)
     models = args.model or DEFAULT_MODELS
     settings = agent_settings()
     for key in ("stability", "similarity_boost", "speed"):

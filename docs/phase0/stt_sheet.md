@@ -15,8 +15,8 @@ The agent's own realtime ASR (`agent.language: ar`) on the words where the real 
 | Quantity above 10 with a unit (اثنعش علبة) | 3 |
 | 10-digit Saudi mobile, grouped and with paired numbers | 4, 5 |
 | Numeric order id read digit by digit | 6 |
-| Al-Ahsa place names (المبرز, Hofuf) and a time slot (بكرة العصر) | 7, 10 |
-| Arabic–English code-switch and English-only | 7, 10 |
+| Al-Ahsa place names (المبرز, الهفوف) and a time slot (بكرة العصر) | 7, 10 |
+| A common English word inside Arabic speech (delivery) | 7 |
 | Fast / elided speech | 3, 5, 6 |
 | Angry escalation | 9 |
 
@@ -35,7 +35,7 @@ The agent's own realtime ASR (`agent.language: ar`) on the words where the real 
 | 7 | أبي delivery للمبرز بكرة العصر | delivery_order | area = المبرز · slot = بكرة + العصر | Mubarraz · Al Mubarraz · بكره/باكر/بكرا + عصر | Say *delivery* in English, rest Saudi Arabic |
 | 8 | متى تفتحون يوم الجمعة؟ | store_hours | day = الجمعة | جمعة · Friday | Kitchen or street noise, not loud |
 | 9 | أبي أكلم موظف | escalate | escalate = موظف | موظفين · أحد من الموظفين · مسؤول · مدير | **Angry**: raised, clipped, a bit fast. No extra words |
-| 10 | Do you deliver to Hofuf? | delivery_area_question | lang = en · area = Hofuf | Hufuf · Hafuf · Hofof · Al Hofuf · Al-Hofuf | Natural Saudi-accented English; must come back in Latin script |
+| 10 | توصلون للهفوف؟ | delivery_area_question | area = الهفوف | هفوف · Hofuf · Hufuf · Al Hofuf | Normal pace, Saudi Arabic |
 
 Deviations from `plan-review.md` §G.1, for the leader to confirm:
 
@@ -43,6 +43,8 @@ Deviations from `plan-review.md` §G.1, for the leader to confirm:
 - **#3 trap item = أكياس زبالة (common) for shelf name أكياس نفايات.** This is a proposal. If the 0a draft trap-items file picks another item, change the utterance, `critical_entities` and `acceptable_variants` for both #3 rows in the CSV.
 - **#6 order id is numeric (4821), no «MG».** Plan amendment 4 replaces `MG-4821` with numeric ids.
 - #9 keeps the review's wording; the "angry" stress is in the delivery, not extra words.
+- **#10 is Arabic («توصلون للهفوف؟»), not English.** Ahmed decided on 2026-10-28 that the project is
+  Arabic only: Sara never switches to English, so there is no English clip and no English check.
 
 ## How to run it (Phase 0b, on the Mac)
 
@@ -59,7 +61,7 @@ Deviations from `plan-review.md` §G.1, for the leader to confirm:
 
 On the best provider, all of:
 
-- (a) intent recoverable in ≥ 18/20 clips, and both #10 clips transcribed in English;
+- (a) intent recoverable in ≥ 18/20 clips;
 - (b) product correct (name or alias) in ≥ 5/6 clips (#1–#3);
 - (c) quantity (#3) 2/2 and order-id digits (#6) exact 2/2;
 - (d) phone digit accuracy ≥ 95% over the 4 phone clips (≤ 2 of 40 digits wrong) and ≥ 2/4 exactly right;
@@ -84,7 +86,7 @@ Print this page (A4, 2 cards per row). Cut along the lines. Speaker writes nothi
 | **Card 3** · S1 / S2<br><br>**أبي اثنعش علبة من أكياس الزبالة**<br><br>Pace: **fast**, words run together | **Card 4** · S1 / S2<br><br>**رقمي صفر خمسة خمسة، واحد اثنين ثلاثة، أربعة خمسة ستة سبعة**<br><br>Pace: steady, pause at each comma |
 | **Card 5** · S1 / S2<br><br>**جوالي صفر خمسة وخمسين، ثمانية وسبعين، ثلاثة أربعة خمسة ستة سبعة**<br><br>Pace: **fast**, paired numbers | **Card 6** · S1 / S2<br><br>**وين وصل طلبي؟ رقمه أربعة ثمانية اثنين واحد**<br><br>Pace: first half **fast**, then one digit at a time |
 | **Card 7** · S1 / S2<br><br>**أبي *delivery* للمبرز بكرة العصر**<br><br>Say *delivery* in English | **Card 8** · S1 / S2<br><br>**متى تفتحون يوم الجمعة؟**<br><br>Room: light kitchen or street noise |
-| **Card 9** · S1 / S2<br><br>**أبي أكلم موظف**<br><br>Tone: **angry**, raised, clipped. No extra words | **Card 10** · S1 / S2<br><br>**Do you deliver to Hofuf?**<br><br>Natural accent, English only |
+| **Card 9** · S1 / S2<br><br>**أبي أكلم موظف**<br><br>Tone: **angry**, raised, clipped. No extra words | **Card 10** · S1 / S2<br><br>**توصلون للهفوف؟**<br><br>Pace: normal |
 
 Operator log (fill on paper, copy into the CSV, then throw the paper away):
 

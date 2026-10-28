@@ -95,7 +95,7 @@ Fix: Phase 0 compares `eleven_v4_turbo` and `eleven_flash_v2_5` on 3 female voic
 **M3. ASR treated as a black box.** Platform §5.
 Fix: `agent.language: "ar"`; Phase 0b tests ≥ 2 of `asr.provider` ∈ {elevenlabs, scribe_realtime, scribe_v2_turbo} on the same 20 clips; put catalog product names in `asr.keywords`; results read from the agent's own conversation transcripts (realtime ASR), not batch Scribe.
 
-**M4. English switching (rule 9 / E10) needs platform config.** Platform §6.
+**M4. English switching (rule 9 / E10) needs platform config.** Platform §6. **Superseded 2026-10-28:** the project is Arabic only (Ahmed); no `language_presets`, no `language_detection`.
 Fix: add `en` to `language_presets`, enable `built_in_tools.language_detection` with a description: switch only on English-only speech; stay in Arabic for mixed Arabic–English (E11). Define the trigger as 2 consecutive English-only caller turns. Whether ASR switches with it is UNVERIFIED → verify in Phase 2 by voice.
 
 **M5. E7/E8/E9 cannot run in text simulation; `simulate-conversation` is deprecated.** Platform §7, quality §8, delivery §10.
@@ -169,7 +169,7 @@ Fix (Ahmed decides): default to a fictional store name in `store.json` for the p
 5. **Matcher:** the B4 pipeline replaces §7 steps 1–5. Plurals/dialect words are aliases. ≤ 2 clarification options. Golden table ≥ 30 pairs. `rapidfuzz==3.14.6`.
 6. **Data model additions:** `unit_dual_ar`, `unit_plural_ar`, `unit_gender`; `total_halalas INTEGER`; `quotes` table (`quote_id`, `conversation_id`, body, totals, `created_at`); orders gain `quote_id`. Seed phones obviously fake.
 7. **Platform config as code:** `agent/` is the `agents init` layout; `agent_configs/sara.json` is generated from `prompts/system_v*.md`; CLI pinned 1.7.1 as devDependency, run via `npx elevenlabs`; the Mac pushes, the laptop only `--dry-run`s. Tool URLs templated from `TOOLS_BASE_URL`; `TOOL_SECRET` as an ElevenLabs Secret (`secret_id`).
-8. **Agent settings baseline:** `language: ar`; `language_presets: [en]` + `language_detection` (English-only trigger); `asr.provider` and `asr.keywords` set per Phase 0b result; `tts.model_id` + `voice_id` = Phase 0b winner; `turn.turn_timeout`, `turn.silence_end_call_timeout`, `conversation.max_duration_seconds: 240`; `auth.allowlist` + `require_origin_header: true`; `call_limits.daily_limit: 20`, `agent_concurrency_limit: 2`; `privacy.retention_days: 30`; `end_call` enabled; `transfer_to_number` not used (widget cannot).
+8. **Agent settings baseline:** `language: ar` only (no English presets, Arabic only since 2026-10-28); `asr.provider` and `asr.keywords` set per Phase 0b result; `tts.model_id` + `voice_id` = Phase 0b winner; `turn.turn_timeout`, `turn.silence_end_call_timeout`, `conversation.max_duration_seconds: 240`; `auth.allowlist` + `require_origin_header: true`; `call_limits.daily_limit: 20`, `agent_concurrency_limit: 2`; `privacy.retention_days: 30`; `end_call` enabled; `transfer_to_number` not used (widget cannot).
 9. **Widget:** hosted on GitHub Pages; embed script pinned; local serving via `python -m http.server`.
 10. **Fallback:** split trigger (STT → Vapi + Azure ar-SA STT; TTS → Azure `ar-SA-ZariyahNeural` re-rating); fallback TTS on ElevenLabs is `eleven_flash_v2_5`, not `eleven_multilingual_v2`; +3–4 h contingency.
 11. **Budget:** ~110 call-minutes on Starter (Ahmed buys before 0b); 23 h + 3 h contingency; pre-approved cut order (Twilio → 6 cards → k=3 → Mermaid).
@@ -235,7 +235,7 @@ All thresholds are **proposals for Ahmed to confirm** before 0b runs; they are n
 | 7 | أبي delivery للمبرز بكرة العصر | mix stays Arabic; area = المبرز; slot = بكرة العصر |
 | 8 | متى تفتحون يوم الجمعة؟ | intent = hours; day = الجمعة |
 | 9 | أبي أكلم موظف | intent = escalate |
-| 10 | Do you deliver to Hofuf? | transcribed in English; intent = delivery; area = Hofuf |
+| 10 | توصلون للهفوف؟ | intent = delivery; area = الهفوف (Arabic only since 2026-10-28) |
 
 ### G.2 TTS dialect gate (needs key + raters)
 
@@ -252,7 +252,7 @@ All thresholds are **proposals for Ahmed to confirm** before 0b runs; they are n
 
 - **Procedure:** 20 clips spoken live into the minimal agent (dashboard or hosted widget) with `agent.language: ar`, first with `asr.provider` default, then repeated with one other provider value; transcripts fetched from `GET /v1/convai/conversations/{id}` (realtime ASR, not batch Scribe). Score **entities, not WER**.
 - **GO (all must hold, on the best provider):**
-  - (a) intent recoverable in ≥ **18/20** clips, including both English clips transcribed as English;
+  - (a) intent recoverable in ≥ **18/20** clips;
   - (b) product entity correct (name or catalog alias) in ≥ **5/6** product clips (#1–#3 × 2);
   - (c) quantity correct in **2/2**; order-id digits exact in **2/2**;
   - (d) phone digit accuracy ≥ **95%** over the 4 phone clips (40 digits, ≤ 2 wrong) and ≥ 2/4 exactly right;

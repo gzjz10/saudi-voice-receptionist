@@ -59,7 +59,7 @@ when Phase 1 planning starts.
 | Minimal agent pushed (`language: ar`, answers «تمام») | BLOCKED-key |
 | 20 clips (10 × S1 Ahmed + S2) spoken live, per provider; 2 providers | BLOCKED-key + BLOCKED-human (S2) |
 | Transcripts from `GET /v1/convai/conversations/{id}` (realtime ASR) | BLOCKED-key (`--fetch` never run live) |
-| (a) ≥ 18/20 intents, both #10 in English | not evaluated |
+| (a) ≥ 18/20 intents | not evaluated |
 | (b) product ≥ 5/6 · (c) qty 2/2, order id 2/2 · (d) ≤ 2/40 phone digits wrong, ≥ 2/4 exact · (e) #7 #8 #9 all 2/2 | not evaluated |
 | RETRY (30 min: provider switch + `asr.keywords`) / NO-GO → Vapi + Azure ar-SA STT | not evaluated |
 
@@ -125,3 +125,9 @@ the docs and CSVs (not phase0/samples/), push, and stop. Do not start Phase 1.
 
 - 2026-10-27 — repo bootstrapped; plan review (`reviews/plan-review.md`) and spec kit docs written;
   Phase 0a files written and checked offline on the Windows laptop. Gate OPEN.
+- 2026-10-28 — resumed on the Mac: venv + CLI 1.7.1 installed, offline tests 7/7. Free-plan key in
+  `.env` (Text to Speech, Voices, User, ElevenAgents); `user subscription get` → tier free,
+  0 / 10,000 characters, 3 voice slots. **Ahmed: the project is Arabic only.** STT #10 is now
+  «توصلون للهفوف؟», check (a) has no English part, TTS line 9 removed, plan.md rule 9 / E10 and
+  review M4 updated. The Spec Kit docs in `specs/` still describe English switching (FR-027,
+  T077, T090, phase0 contract); update them when Phase 1 planning starts.

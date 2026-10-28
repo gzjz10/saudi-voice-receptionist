@@ -49,7 +49,6 @@ from pathlib import Path
 GATE = {
     "clips_per_run": 20,          # 10 utterances x 2 speakers
     "intent_min": 18,             # (a) intent recoverable in >= 18/20
-    "english_ids": ("10",),       # (a) both English clips transcribed in English
     "product_ids": ("1", "2", "3"),
     "product_min": 5,             # (b) product correct in >= 5/6
     "qty_id": "3",                # (c) quantity 2/2
@@ -257,7 +256,7 @@ INTENT_CUES = {
     "delivery_order": [["delivery", "ديليفري", "دليفري", "توصيل", "توصلون", "وصلوه"]],
     "store_hours": [["تفتحون", "تفتحو", "تفتحوا", "دوام", "دوامكم", "فاتحين", "مفتوح", "تسكرون"]],
     "escalate": [["موظف", "اكلم", "مسوول", "مدير", "احد"]],
-    "delivery_area_question": [["deliver", "delivery"]],
+    "delivery_area_question": [["توصلون", "توصلوا", "توصلو", "يوصل", "توصيل", "delivery"]],
 }
 
 
@@ -449,11 +448,8 @@ def evaluate_run(provider: str, clips: list[ClipScore]) -> RunVerdict:
     v.mean_cer = sum(cers) / len(cers) if cers else None
 
     intents = sum(c.intent_final for c in scored)
-    eng = [x for cid in GATE["english_ids"] for x in _ent(scored, cid, "lang")]
-    eng_ok = len(eng) == 2 * len(GATE["english_ids"]) and all(eng)
-    v.checks.append(("(a) intent >= %d/20 + English clips in English" % GATE["intent_min"],
-                     intents >= GATE["intent_min"] and eng_ok,
-                     f"intent {intents}/{len(scored)}, english {sum(eng)}/{len(eng)}"))
+    v.checks.append(("(a) intent >= %d/20" % GATE["intent_min"],
+                     intents >= GATE["intent_min"], f"intent {intents}/{len(scored)}"))
 
     prod = [x for cid in GATE["product_ids"] for x in _ent(scored, cid, "product")]
     v.checks.append(("(b) product >= %d/6" % GATE["product_min"],
@@ -636,7 +632,7 @@ GOOD = {  # (id, speaker) -> transcript; Arabic-Indic digits, tashkeel, ال/ل�
     ("7", "S1"): "أبي delivery للمبرز بكرة العصر", ("7", "S2"): "ابي ديليفري المبرز بكره العصر",
     ("8", "S1"): "متى تفتحون يوم الجمعة", ("8", "S2"): "متى تفتحون يوم الجمعه؟",
     ("9", "S1"): "أبي أكلم موظف", ("9", "S2"): "ابي اكلم موظف!",
-    ("10", "S1"): "Do you deliver to Hofuf?", ("10", "S2"): "do you deliver to al hofuf",
+    ("10", "S1"): "توصلون للهفوف؟", ("10", "S2"): "توصلون الهفوف",
 }
 BAD = dict(GOOD)
 BAD.update({
@@ -644,7 +640,6 @@ BAD.update({
     ("2", "S2"): "عندكم كاسات",                   # product incomplete
     ("4", "S2"): "رقمي ٠٥٥ ١٢٨ ٤٥٦٧",             # one digit wrong
     ("5", "S1"): "جوالي صفر خمسة خمسين ثمانية سبعين ثلاثة",  # paired numbers mangled
-    ("10", "S2"): "دو يو ديليفر تو الهفوف",       # transcribed in Arabic script
 })
 
 
@@ -689,7 +684,7 @@ def _selftest() -> int:
     assert good.passed and good.entity_acc == 1.0, good.checks
     assert not bad.passed
     failed = {name[:3] for name, ok_, _ in bad.checks if not ok_}
-    assert failed == {"(a)", "(b)", "(d)"}, failed
+    assert failed == {"(b)", "(d)"}, failed
     assert ok is True and "STT GATE: PASS" in text
     # single provider must not pass the gate without --allow-single-provider
     assert report(filled("only_one", GOOD), out=io.StringIO()) is False

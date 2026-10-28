@@ -80,7 +80,7 @@ Lines 1–8 are the gate script (`reviews/plan-review.md` §G.1), exactly as `sp
 
 - Ahmed confirms or corrects the register of lines 2–4 before 0b.
 - The same 8 lines live in `docs/phase0/tts_script.md`; any correction goes there and is used via `tts_samples.py --script docs/phase0/tts_script.md`.
-- Line 9 is optional (`--with-english`) and is **not** part of the gate mean.
+- Arabic only: there is no English line (Ahmed, 2026-10-28).
 
 | # | Purpose | Text |
 | --- | --- | --- |
@@ -92,7 +92,6 @@ Lines 1–8 are the gate script (`reviews/plan-review.md` §G.1), exactly as `sp
 | 6 | Order id 4821 | رقم طلبكم أربعة، ثمانية، اثنين، واحد |
 | 7 | Clarifying question (2 options) | تقصدون صحون زجاج أو صحون بلاستيك؟ |
 | 8 | Apology + escalation + close | أعتذر منكم، بحوّلكم لموظف يتواصل معكم، شكراً لاتصالكم |
-| 9 | English (optional, not gated) | Thanks for calling Maqadeena. How can I help you today? |
 
 ## 5. Rating form
 
