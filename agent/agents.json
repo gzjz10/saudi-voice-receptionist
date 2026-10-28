@@ -1,10 +1,12 @@
 {
-  "agents": [
-    {
-      "config": "agent_configs/sara.json"
-    },
-    {
-      "config": "agent_configs/sara_stt_probe.json"
-    }
-  ]
+    "agents": [
+        {
+            "config": "agent_configs/sara.json",
+            "id": "agent_8601m61c0e71fyca17s7cvytjs8s"
+        },
+        {
+            "config": "agent_configs/sara_stt_probe.json",
+            "id": "agent_0401m61c0gnxfvkaa3g0ky765ryb"
+        }
+    ]
 }

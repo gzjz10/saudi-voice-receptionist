@@ -56,7 +56,7 @@ when Phase 1 planning starts.
 
 | Criterion | State |
 | --- | --- |
-| Minimal agent pushed (`language: ar`, answers «تمام») | BLOCKED-key |
+| Minimal agent pushed (`language: ar`, answers «تمام») | PASS (2026-10-28; ids in `agent/agents.json`) |
 | 20 clips (10 × S1 Ahmed + S2) spoken live, per provider; 2 providers | BLOCKED-key + BLOCKED-human (S2) |
 | Transcripts from `GET /v1/convai/conversations/{id}` (realtime ASR) | BLOCKED-key (`--fetch` never run live) |
 | (a) ≥ 18/20 intents | not evaluated |
