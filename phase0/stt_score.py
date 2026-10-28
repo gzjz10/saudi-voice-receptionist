@@ -526,6 +526,12 @@ def load_api_key() -> str | None:
 
 
 def fetch_user_text(conversation_id: str, key: str) -> str:
+    """All user turns of a conversation; `conv_x#3` returns only the 3rd user turn.
+
+    The `#n` form lets one call carry all 10 cards in order (one user turn per card),
+    which is how Ahmed records them (2026-10-28) instead of one call per card.
+    """
+    conversation_id, _, turn = conversation_id.partition("#")
     url = f"{API_BASE}/v1/convai/conversations/{urllib.request.quote(conversation_id)}"
     req = urllib.request.Request(url, headers={"xi-api-key": key, "Accept": "application/json"})
     with urllib.request.urlopen(req, timeout=30) as resp:
@@ -533,6 +539,11 @@ def fetch_user_text(conversation_id: str, key: str) -> str:
     if data.get("status") not in ("done", None):
         raise RuntimeError(f"conversation status is {data.get('status')!r}, try again later")
     msgs = [t.get("message") or "" for t in data.get("transcript", []) if t.get("role") == "user"]
+    if turn:
+        n = int(turn)
+        if not 1 <= n <= len(msgs):
+            raise ValueError(f"turn {n} not found ({len(msgs)} user turns)")
+        return msgs[n - 1].strip()
     return " / ".join(m.strip() for m in msgs if m.strip())
 
 
