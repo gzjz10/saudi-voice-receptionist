@@ -40,7 +40,7 @@ The agent's own realtime ASR (`agent.language: ar`) on the words where the real 
 Deviations from `plan-review.md` §G.1, for the leader to confirm:
 
 - **#5 gains a final «سبعة».** The review's text (صفر خمسة وخمسين، ثمانية وسبعين، ثلاثة أربعة خمسة ستة) is 055·78·3456 = 9 digits and cannot equal its own target 0557834567. Adding «سبعة» makes it 055·78·34567 = 0557834567.
-- **#3 trap item = أكياس زبالة (common) for shelf name أكياس نفايات.** This is a proposal. If the 0a draft trap-items file picks another item, change the utterance, `critical_entities` and `acceptable_variants` for both #3 rows in the CSV.
+- **#3 trap item = أكياس زبالة (common) for shelf name أكياس نفايات.** Confirmed by Ahmed 2026-10-28. If a later trap-items file trap-items file picks another item, change the utterance, `critical_entities` and `acceptable_variants` for both #3 rows in the CSV.
 - **#6 order id is numeric (4821), no «MG».** Plan amendment 4 replaces `MG-4821` with numeric ids.
 - #9 keeps the review's wording; the "angry" stress is in the delivery, not extra words.
 - **#10 is Arabic («توصلون للهفوف؟»), not English.** Ahmed decided on 2026-10-28 that the project is
@@ -57,7 +57,7 @@ Deviations from `plan-review.md` §G.1, for the leader to confirm:
 7. **Second provider.** `python phase0/stt_score.py docs/phase0/stt_results.csv --add-run scribe_realtime` appends 20 blank rows; switch `asr.provider` on the agent, repeat steps 3–6. Allowed values (CLI 1.7.1 schema): `elevenlabs`, `scribe_realtime`, `scribe_v2_turbo`.
 8. **Score.** `python phase0/stt_score.py docs/phase0/stt_results.csv`. Copy the gate lines into `docs/phase0/decision.md`.
 
-## Gate (plan-review.md §G.3, thresholds still to be confirmed by Ahmed)
+## Gate (plan-review.md §G.3, thresholds confirmed by Ahmed 2026-10-28)
 
 On the best provider, all of:
 

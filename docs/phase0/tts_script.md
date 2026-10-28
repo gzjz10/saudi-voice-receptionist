@@ -4,7 +4,7 @@ Source: `reviews/plan-review.md` §G.1. One Saudi colloquial register, spoken st
 `spoken.py` (Phase 1) will emit them. Sara addresses the caller in the plural (معكم، رقمكم) and
 speaks of herself in the feminine.
 
-`register_signed_off: no` — Ahmed confirms or corrects the register of lines 2–4 (and line 4's
+`register_signed_off: yes` (Ahmed, 2026-10-28, approved as written) — Ahmed confirms or corrects the register of lines 2–4 (and line 4's
 "مية وسبعطعش") before 0b. Whatever he fixes here becomes Phase 1's `golden_spoken.csv`.
 
 `phase0/tts_samples.py` reads this list with `--script docs/phase0/tts_script.md`; its built-in

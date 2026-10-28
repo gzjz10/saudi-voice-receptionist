@@ -23,7 +23,7 @@ Nothing is PASS yet; that is correct, not a gap.
 | `agent/` is the CLI `agents init` layout; `@elevenlabs/cli` pinned 1.7.1 as devDependency | PREPARED | `agent/package.json`, lockfile with darwin-arm64 binary; `--version` → `elevenlabs 1.7.1` |
 | `agent_configs/sara.json`: minimal Arabic agent, `language: ar`, no tools, no `voice_id` | PREPARED | `python agent/validate_configs.py` → OK; `test_phase0.py` asserts no `voice_id`/tools and prompt == `prompts/system_v0.md` |
 | `npx elevenlabs agents push --dry-run` validates with no API call | PREPARED (weak check) | exits 0 and prints "Would update agent". **Caveat:** in 1.7.1 the dry-run only parses JSON (it even exits 0 on invalid JSON); `validate_configs.py` adds enum/range checks from the CLI's own schema and is the real 0a check |
-| `docs/phase0/tts_script.md` (8 lines) | PREPARED, register unsigned | lines from review §G.1; `register_signed_off: no` until Ahmed reviews lines 2–4 |
+| `docs/phase0/tts_script.md` (8 lines) | PREPARED, register signed off 2026-10-28 | lines from review §G.1; `register_signed_off: no` until Ahmed reviews lines 2–4 |
 | `docs/phase0/stt_sheet.md` (10 utterances + expected entities) | PREPARED | includes cards, run steps, privacy rules. #5 corrected (+«سبعة») so the spoken digits equal 0557834567; #6 numeric 4821; #3 trap = أكياس زبالة/أكياس نفايات |
 | `docs/phase0/voice_selection.md` (procedure, NO voice IDs) | PREPARED | 3 leads cited by name/catalog page only; ID table empty; `test_phase0.py` greps docs for id-like tokens |
 | `docs/phase0/tts_ratings.csv` + `docs/phase0/stt_results.csv` templates | PREPARED | header-only ratings sheet; 20 blank result rows (10 × S1/S2) |
@@ -44,7 +44,7 @@ when Phase 1 planning starts.
 
 | Criterion | State |
 | --- | --- |
-| Ahmed confirms thresholds and the register of lines 2–4 | BLOCKED-human |
+| Ahmed confirms thresholds and the register of lines 2–4 | PASS (2026-10-28, approved as is) |
 | Starter plan bought, key in `.env` on the Mac | BLOCKED-human (payment) |
 | 3 female Saudi/Gulf voices found via the API, IDs recorded from the response only | BLOCKED-key |
 | 48 clips (3 voices × 2 models × 8 lines) with the agent's exact voice settings, blind + seeded | BLOCKED-key (2,022 characters) |
