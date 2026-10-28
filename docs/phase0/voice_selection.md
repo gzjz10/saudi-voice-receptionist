@@ -50,11 +50,11 @@ Fallback outside ElevenLabs (only on TTS NO-GO, G.2): Azure `ar-SA-ZariyahNeural
 
 | Slot | voice_id | public_owner_id | accent (API) | age (API) | use_case (API) | verified Arabic models (API) |
 | --- | --- | --- | --- | --- | --- | --- |
-| A | `gVzwmdZzRgBrNjXaTmi5` (Layan – The Professional) | `64cbc624eb5aab4e95a968e1f41d75402277cca6e549036ed17e56ea33bbbc9e` | saudi | middle_aged | conversational | eleven_flash_v2_5, eleven_multilingual_v2 |
-| B | `o0oG1TnHDWDdKbAeBgCO` (Mona – Saudi Arabic) | `48882beb49e06728c74c55ab2f06213179d510ee2dfb39997c3291936cdfc646` | saudi | middle_aged | informative_educational | eleven_flash_v2_5, eleven_multilingual_v2, eleven_v4, eleven_v4_turbo |
-| C | — (none kept, see below) | | | | | |
+| A | `FZeLZd39ejvLgzR2gY0t` (Nora S – Saudi Natural & Calm) | `d6df43784a0fefba8f6ef933859c6750a6e361ff5669831313ee3df39b95f2ee` | saudi | young | social_media | eleven_flash_v2_5, eleven_multilingual_v2, eleven_v4, eleven_v4_turbo |
+| B | — | | | | | |
+| C | — | | | | | |
 
-Selection 2026-10-28 (Ahmed listened to the library previews): of the first 5 shortlisted (Heba Mansuri – Arabic Customer Care, Hana, Layan, Lama, Noura) only Layan was acceptable; from a wider search (Amal, Nouf, Mona, Heba Mansuri – Gentle and Calm, Noorah) Ahmed chose Mona. **Two voices instead of three:** no third voice was acceptable, so 0b runs 2 voices × 2 models × 8 lines = 32 clips (1,348 characters). Layan is not verified for `eleven_v4_turbo` by the API.
+Selection 2026-10-28 (Ahmed listened to the library previews): from the first 5 (Heba Mansuri – Arabic Customer Care, Hana, Layan, Lama, Noura) only Layan was acceptable; from a wider search (Amal, Nouf, Mona, Heba Mansuri – Gentle and Calm, Noorah, plus the paid-only Nora S and Joud) Ahmed first picked Mona, then chose **Nora S only**. **One voice instead of three:** 0b runs 1 voice × 2 models × 8 lines = 16 clips (674 characters), so the gate compares models, not voices. Nora S has `free_users_allowed=False` in the API response: it needs a paid plan (Starter) before any clip can be made.
 
 ## 3. Models and starting settings
 
