@@ -67,7 +67,7 @@ when Phase 1 planning starts.
 
 | Item | State |
 | --- | --- |
-| One Simulation test; does it bill minutes? | BLOCKED-key, UNVERIFIED |
+| One Simulation test; does it bill minutes? | PASS 2026-10-28: test passed; bills credits (199), not call minutes |
 | `docs/phase0/decision.md` with LLM, asr.provider, tts.model_id, voice_id, settings, CLI 1.7.1, seed, minutes | BLOCKED (0b output) |
 | Ahmed signs `decision.md`; STATUS updated with minutes | BLOCKED-human |
 

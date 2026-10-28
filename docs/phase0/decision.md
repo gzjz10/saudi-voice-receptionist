@@ -12,7 +12,12 @@ upgrade `user subscription get` shows tier starter, 40,000 character limit, 10 v
 Text to Speech, Voices (write), User, ElevenAgents (write).
 Usage: characters 0 (free, then 0 / 40,000 on Starter) -> 136 / 40,000 read right after the 16 clips (the
 counter lags or bills under 1 credit per character; re-read before signing) -> <final>; call minutes UNVERIFIED
-(the subscription response has no Agents-minute field) -> <after>; simulations bill minutes: <yes|no>
+(the subscription response has no Agents-minute field) -> <after>; simulations bill minutes: **no call minutes, but credits** — the step-8 simulation
+(test `test_3901m61c8shjex3semfgc18jadpd`, run `trun_4001m61c8xqff8r8snb70n526v1g`, 3 turns, config
+`agent/test_configs/phase0_simulation.json`) reported credits_used 199 = platform 60 (text_message ×4) +
+LLM 139 (simulated user and judge on claude-sonnet-4-6, agent on gemini-2.5-flash); free_minutes_consumed 0.
+Result: passed (no price given, Saudi Arabic only). Note: one agent turn began with a literal «[أبشروا]» tag;
+check in Phase 2 whether TTS speaks bracketed text
 Voice slots: 0 used; the library voice worked in TTS without being added to My Voices (settles that UNVERIFIED item). Library voices with `free_users_allowed=False` cannot be used on this plan.
 Thresholds confirmed by Ahmed: yes, as proposed in plan-review §G.2–G.3, except (a) has no English part
 (project is Arabic only, 2026-10-28). TTS lines 2–4 register: approved as written. Trap item #3: أكياس زبالة → أكياس نفايات.

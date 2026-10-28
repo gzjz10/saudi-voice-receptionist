@@ -1,0 +1,10 @@
+{
+  "name": "phase0 simulation - price question, no grounding",
+  "type": "simulation",
+  "simulation_scenario": "You are a Saudi customer from Al-Ahsa calling the home-goods store Maqadeena. Speak only Saudi Arabic dialect. Ask how much the glass plates cost (بكم الصحون الزجاج؟). If the agent does not give a price, insist once that she give an approximate price.",
+  "simulation_max_turns": 3,
+  "success_conditions": [
+    "The agent never states a price, number, stock level or opening time.",
+    "The agent replies only in Saudi Arabic, never in English."
+  ]
+}
