@@ -4,7 +4,8 @@
 
 The page embeds phase0/samples/blind/NNN.mp3 as data URIs, so a rater gets a
 single file (WhatsApp, AirDrop) that works offline on a phone. It shows only
-blind ids, never voice, model or line. The rater picks R1/R2/R3, rates each
+blind ids, never voice, model or line (only whether a clip has a number, so that
+question is asked exactly where it applies). The rater picks R1/R2/R3, rates each
 clip, and copies or downloads rows in the docs/phase0/tts_ratings.csv format:
 rater_id,blind_id,naturalness,number_correct,note
 """
@@ -12,11 +13,14 @@ rater_id,blind_id,naturalness,number_correct,note
 from __future__ import annotations
 
 import base64
+import csv
 import json
 import sys
 from pathlib import Path
 
 BLIND = Path(__file__).resolve().parent / "samples" / "blind"
+KEY = BLIND.parent / "blind_key.csv"
+NUMBER_LINES = {2, 3, 4, 5, 6}
 
 PAGE = """<!doctype html>
 <html lang="ar" dir="rtl">
@@ -59,7 +63,7 @@ PAGE = """<!doctype html>
     <div><b>مدى سعودية الصوت (١–٥):</b></div>
     <div>١ = أجنبي أو مكسّر · ٢ = فصحى مثل قارئ الأخبار · ٣ = خليجي فيه أخطاء واضحة</div>
     <div>٤ = موظفة استقبال سعودية مع غلطة بسيطة · ٥ = ما تفرقها عن سعودية أصلية</div>
-    <div style="margin-top:6px"><b>الرقم:</b> إذا المقطع فيه رقم أو سعر، هل سمعت الرقم واضح وصحيح؟</div>
+    <div style="margin-top:6px"><b>الرقم:</b> المقاطع اللي فيها رقم أو سعر عليها سؤال إضافي: سمعته واضح وصحيح؟</div>
   </div>
   <div class="row"><span class="lbl">مين أنت؟</span>
     <select id="rater"><option value="">اختر</option><option>R1</option><option>R2</option><option>R3</option></select>
@@ -87,16 +91,15 @@ for (const c of CLIPS) {
     <audio controls preload="none" src="${c.src}"></audio>
     <div class="row"><span class="lbl">مدى سعودية الصوت</span>
       ${[1,2,3,4,5].map(v => `<button class="opt" data-k="n" data-v="${v}" aria-pressed="false">${digits(v)}</button>`).join("")}</div>
-    <div class="row"><span class="lbl">الرقم (إذا فيه رقم)</span>
+    ${c.has_number ? `<div class="row"><span class="lbl">هذا المقطع فيه رقم أو سعر: سمعته واضح وصحيح؟</span>
       <button class="opt" data-k="num" data-v="y" aria-pressed="false">صح</button>
-      <button class="opt" data-k="num" data-v="n" aria-pressed="false">غلط</button>
-      <button class="opt" data-k="num" data-v="" aria-pressed="true">ما فيه رقم</button></div>
+      <button class="opt" data-k="num" data-v="n" aria-pressed="false">غلط</button></div>` : ""}
     <input type="text" placeholder="ملاحظة: الكلمة اللي طلعت غلط (اختياري)">`;
   card.querySelectorAll("button.opt").forEach(b => b.onclick = () => {
     card.querySelectorAll(`button[data-k="${b.dataset.k}"]`).forEach(x => x.setAttribute("aria-pressed", "false"));
     b.setAttribute("aria-pressed", "true");
     state[c.id][b.dataset.k] = b.dataset.v;
-    card.classList.toggle("done", !!state[c.id].n);
+    card.classList.toggle("done", rated(c));
     refresh();
   });
   card.querySelector("input").oninput = e => { state[c.id].note = e.target.value; };
@@ -104,9 +107,10 @@ for (const c of CLIPS) {
 }
 rater.onchange = refresh;
 
-function ready() { return rater.value && CLIPS.every(c => state[c.id].n); }
+function rated(c) { return !!state[c.id].n && (!c.has_number || !!state[c.id].num); }
+function ready() { return rater.value && CLIPS.every(rated); }
 function refresh() {
-  const left = CLIPS.filter(c => !state[c.id].n).length;
+  const left = CLIPS.filter(c => !rated(c)).length;
   document.getElementById("copy").disabled = document.getElementById("save").disabled = !ready();
   msg.textContent = !rater.value ? "اختر R1 أو R2 أو R3 فوق" : left ? `باقي ${digits(left)} مقطع` : "خلصت، انسخ النتائج وأرسلها";
 }
@@ -136,7 +140,11 @@ def main() -> int:
     if not files:
         print(f"no blind clips in {BLIND}; run tts_samples.py --blind first", file=sys.stderr)
         return 1
-    clips = [{"id": f.stem, "src": "data:audio/mpeg;base64," + base64.b64encode(f.read_bytes()).decode()} for f in files]
+    # Only "has a number" leaves the key; voice, model and line stay hidden.
+    with KEY.open(encoding="utf-8") as fh:
+        numbered = {r["blind_id"] for r in csv.DictReader(fh) if int(r["line"]) in NUMBER_LINES}
+    clips = [{"id": f.stem, "has_number": f.stem in numbered,
+              "src": "data:audio/mpeg;base64," + base64.b64encode(f.read_bytes()).decode()} for f in files]
     out = BLIND / "rate.html"
     out.write_text(PAGE.replace("__CLIPS__", json.dumps(clips)), encoding="utf-8")
     print(f"wrote {out.relative_to(BLIND.parent.parent.parent)} ({len(clips)} clips, {out.stat().st_size // 1024} KB)")
