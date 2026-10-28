@@ -66,7 +66,7 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 👤 needs Ahmed
 - ✅ T073 Run tests + latency on the Mac, summary into `docs/STATUS.md`
 - ✅ T072 Ahmed approved `backend/tests/golden_spoken.csv` (all rows, 2026-10-28)
 - ✅ T074 Tunnel check: all 6 tools 200 with secret, 401 without, through the public URL (`scripts/tunnel_check.sh`)
-- 👤 T075 Fresh clone on the Windows laptop runs `scripts/test.sh` green
+- ⏭️ T075 Windows clone check — waived by Ahmed 2026-10-28 (Mac only)
 
 ### Gate
-- ⬜ T076 **Phase 1 gate** (everything PASS except the Windows clone): tests green (≥ 30 matcher pairs, golden spoken), 401/413/422 and 200 envelopes on every error path, idempotent `create_order`, p95 < 300 ms, tunnel check, Windows clone green
+- ✅ T076 **Phase 1 gate PASSED** 2026-10-28 (Windows clone waived): tests green (≥ 30 matcher pairs, golden spoken), 401/413/422 and 200 envelopes on every error path, idempotent `create_order`, p95 < 300 ms, tunnel check, Windows clone green

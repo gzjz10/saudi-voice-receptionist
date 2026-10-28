@@ -134,8 +134,7 @@ the docs and CSVs (not phase0/samples/), push, and stop. Do not start Phase 1.
 
 ## Phase 1 — tools backend (started 2026-10-28, in parallel with 0b by Ahmed's say-so)
 
-Plan and task ticks: `docs/phase1/PLAN.md`. **Phase 1 gate: OPEN** — automated checks pass;
-three human checks remain.
+Plan and task ticks: `docs/phase1/PLAN.md`. **Phase 1 gate: PASSED 2026-10-28** (Windows clone check waived by Ahmed).
 
 | Gate check (T076) | State |
 | --- | --- |
@@ -144,7 +143,7 @@ three human checks remain.
 | `create_order` idempotent (2nd call → `duplicate: true`) | PASS — with and without `conversation_id` |
 | p95 < 300 ms over 100 calls per tool | PASS in-process (`bash scripts/latency.sh`): worst p95 3.2 ms. Live uvicorn: 200 with secret, 401 without, and the 30/min limiter returned 429 as designed |
 | Tunnel 200 with secret / 401 without, from a second network | PASS 2026-10-28 — Ahmed started `dev.sh` + `tunnel.sh` (quick tunnel); `bash scripts/tunnel_check.sh` through the public trycloudflare URL: all 6 tools 200 with the secret, 401 without. Whether the Mac was on the phone hotspot is per Ahmed |
-| Fresh clone green on Windows | **BLOCKED-human** (T075) |
+| Fresh clone green on Windows | WAIVED by Ahmed 2026-10-28 (T075): the project runs on the Mac only. Re-open if the Windows laptop is used again |
 | `golden_spoken.csv` signed | PASS 2026-10-28 — Ahmed approved all 32 draft rows as written (T072) |
 
 Decisions: Arabic only (`say_en`/`text_en` removed from the contract); store name مقاضينا as in
