@@ -23,6 +23,7 @@ from .timeslot import RIYADH, SlotError, parse_now, resolve
 
 DATA = Path(__file__).resolve().parents[2] / "data"
 MAX_QTY = 20
+TOPICS = {"hours", "location", "delivery", "returns", "phone"}
 
 STATUS_AR = {
     "received": "استلمنا طلبكم وبنبدأ نجهزه",
@@ -105,6 +106,8 @@ def get_product(req: GetProductRequest) -> dict:
 def get_store_info(req: GetStoreInfoRequest) -> dict:
     s = store()
     extra: dict = {}
+    if req.topic not in TOPICS:
+        return error("unknown_topic", "أقدر أفيدكم عن الدوام أو الموقع أو التوصيل أو الاسترجاع أو رقم المحل")
     if req.topic == "hours":
         if req.day == "fri":
             text = s["hours_spoken_ar"]["fri"]

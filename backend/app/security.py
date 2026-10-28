@@ -28,6 +28,7 @@ def _rate_limit() -> int:
 class ToolGuard:
     def __init__(self, app):
         self.app = app
+        # One deque per client IP; never pruned, which is fine for a demo with a handful of callers.
         self.hits: dict[str, deque] = defaultdict(deque)
 
     async def _reply(self, send, status: int, body: dict | None, scope, started: float) -> None:

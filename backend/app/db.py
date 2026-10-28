@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import sqlite3
+from contextlib import closing
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
@@ -83,7 +84,7 @@ def connect() -> sqlite3.Connection:
 
 def init(reset: bool = False) -> None:
     """Create tables and the 3 seed orders. `reset` drops everything first (per eval run)."""
-    with connect() as conn:
+    with closing(connect()) as conn, conn:
         if reset:
             conn.executescript("DROP TABLE IF EXISTS orders; DROP TABLE IF EXISTS tickets; DROP TABLE IF EXISTS quotes;")
         conn.executescript(SCHEMA)

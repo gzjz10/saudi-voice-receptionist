@@ -49,8 +49,10 @@ def test_store_info_topics(call):
     assert not any(ch.isdigit() for ch in call("get_store_info", {"topic": "phone"}).json()["say_ar"])
 
 
-def test_store_info_unknown_topic_is_schema_error(call):
-    assert call("get_store_info", {"topic": "parking"}).status_code == 422
+def test_store_info_unknown_topic(call):
+    r = call("get_store_info", {"topic": "parking"})
+    assert r.status_code == 200 and r.json()["error_code"] == "unknown_topic" and r.json()["say_ar"]
+    assert call("get_store_info", {"topic": "x" * 21}).status_code == 422
 
 
 # ---------------------------------------------------------------- quote_order

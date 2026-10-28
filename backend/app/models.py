@@ -20,7 +20,8 @@ class GetProductRequest(Strict):
 
 
 class GetStoreInfoRequest(Strict):
-    topic: Literal["hours", "location", "delivery", "returns", "phone"]
+    # hours | location | delivery | returns | phone; anything else -> error_code unknown_topic.
+    topic: str = Field(min_length=1, max_length=20)
     day: Literal["sat", "sun", "mon", "tue", "wed", "thu", "fri"] | None = None
     conversation_id: str | None = ConversationId
 

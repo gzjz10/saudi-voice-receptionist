@@ -270,7 +270,8 @@ components:
       properties:
         topic:
           type: string
-          enum: [hours, location, delivery, returns, phone]
+          maxLength: 20
+          description: "hours | location | delivery | returns | phone. Anything else answers error_code unknown_topic (not 422)."
         day:
           type: [string, "null"]
           enum: [null, sat, sun, mon, tue, wed, thu, fri]

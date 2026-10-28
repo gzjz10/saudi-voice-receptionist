@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import time
+from contextlib import closing
 
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
@@ -43,7 +44,8 @@ def _route(name: str, model, handler, needs_db: bool):
     def endpoint(req) -> dict:
         started = time.perf_counter()
         if needs_db:
-            with db.connect() as conn:
+            # sqlite3's context manager only commits; closing() releases the file handle.
+            with closing(db.connect()) as conn, conn:
                 result = handler(req, conn)
         else:
             result = handler(req)

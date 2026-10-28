@@ -31,7 +31,7 @@ def test_spec_has_six_tools():
 def test_responses_match_contract(call, validate):
     for q in ["الصحون الزجاج", "بكم الصحون", "أكواب زجاج", "ايفون"]:
         validate("GetProductResponse", call("get_product", {"query": q}).json())
-    for topic in ["hours", "location", "delivery", "returns", "phone"]:
+    for topic in ["hours", "location", "delivery", "returns", "phone", "parking"]:
         validate("GetStoreInfoResponse", call("get_store_info", {"topic": topic}).json())
 
     base = {"items": [{"product_id": "CLN-002", "qty": 3}], "fulfillment": "pickup",
