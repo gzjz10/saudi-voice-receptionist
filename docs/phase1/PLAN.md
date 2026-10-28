@@ -65,8 +65,8 @@ Legend: ✅ done · 🔄 in progress · ⬜ to do · 👤 needs Ahmed
 - ✅ T071 `scripts/tunnel.sh` written (cloudflared 2026.7.1); Ahmed starts it for T074
 - ✅ T073 Run tests + latency on the Mac, summary into `docs/STATUS.md`
 - 👤 T072 Ahmed approves `backend/tests/golden_spoken.csv`
-- 👤 T074 Tunnel check from a second network (phone hotspot): 200 with secret, 401 without
+- ✅ T074 Tunnel check: all 6 tools 200 with secret, 401 without, through the public URL (`scripts/tunnel_check.sh`)
 - 👤 T075 Fresh clone on the Windows laptop runs `scripts/test.sh` green
 
 ### Gate
-- ⬜ T076 **Phase 1 gate** (automated part PASS, 3 human checks left): tests green (≥ 30 matcher pairs, golden spoken), 401/413/422 and 200 envelopes on every error path, idempotent `create_order`, p95 < 300 ms, tunnel check, Windows clone green
+- ⬜ T076 **Phase 1 gate** (automated part + tunnel PASS; golden_spoken sign-off and Windows clone left): tests green (≥ 30 matcher pairs, golden spoken), 401/413/422 and 200 envelopes on every error path, idempotent `create_order`, p95 < 300 ms, tunnel check, Windows clone green

@@ -143,7 +143,7 @@ three human checks remain.
 | 401 without secret, 413 > 8 KB, 422 on schema, 200 envelope on every error path | PASS — `backend/tests/test_http.py`, `test_tools.py`, `test_contracts.py` (all responses validate against `tools.openapi.yaml`) |
 | `create_order` idempotent (2nd call → `duplicate: true`) | PASS — with and without `conversation_id` |
 | p95 < 300 ms over 100 calls per tool | PASS in-process (`bash scripts/latency.sh`): worst p95 3.2 ms. Live uvicorn: 200 with secret, 401 without, and the 30/min limiter returned 429 as designed |
-| Tunnel 200 with secret / 401 without, from a second network | **BLOCKED-human** — `scripts/tunnel.sh` written; starting a public tunnel needs Ahmed (phone hotspot) |
+| Tunnel 200 with secret / 401 without, from a second network | PASS 2026-10-28 — Ahmed started `dev.sh` + `tunnel.sh` (quick tunnel); `bash scripts/tunnel_check.sh` through the public trycloudflare URL: all 6 tools 200 with the secret, 401 without. Whether the Mac was on the phone hotspot is per Ahmed |
 | Fresh clone green on Windows | **BLOCKED-human** (T075) |
 | `golden_spoken.csv` signed | **BLOCKED-human** (T072): TTS lines 2–6 rows are signed; the other 32 rows are drafts |
 
