@@ -154,7 +154,7 @@ demo values; gitleaks pinned 8.30.1 but not installed (`scripts/install_hooks.sh
 
 ## Phase 2 — prompt v1, tools, widget (started 2026-11-01)
 
-Tasks: `specs/001-saudi-voice-receptionist/tasks.md` T077–T092. **Phase 2 gate: OPEN.**
+Tasks: `specs/001-saudi-voice-receptionist/tasks.md` T077–T092. **Phase 2 gate: OPEN — orders, out-of-stock and drift pass; waiting on Ahmed's call on T090 (partial) and one call to re-test the phone read-back fix.**
 
 | Item | State |
 | --- | --- |
@@ -167,7 +167,12 @@ Tasks: `specs/001-saudi-voice-receptionist/tasks.md` T077–T092. **Phase 2 gate
 | T085 `docs/flow.mmd` | DONE |
 | T086 public demo page | DONE 2026-11-01 with Ahmed's yes, on Cloudflare instead of GitHub Pages: static-assets Worker `saudi-voice-receptionist` (`wrangler.jsonc`, serves only `demo/`) at https://saudi-voice-receptionist.maqadeena-purchase-order.workers.dev. Tools work only while `dev.sh` + the tunnel run on the Mac |
 | T087 push | DONE 2026-11-01: 6 tools in `agent/tools.json`, agent renamed `Sara`; live read-back: 6 `tool_ids`, only `end_call` enabled, prompt == `system_v1.md`; tunnel 200 with secret, 401 without. `asr.keywords` = مقاضينا + the 4 towns (Phase 0 carry-over) |
-| T088–T090 voice calls | IN PROGRESS. Call 1 `conv_9501m6brykn5eh8sa18rwa289t3z` (77 s, no order): product + price right, but she asked for the district and refused «حي برادة» herself. Fix: step 4 now asks for one of the 4 towns and leaves the area decision to `quote_order`; re-pushed |
+| T088 three voice orders | PASS 2026-11-01. 7088 `conv_5201m6bsby18ew3rtw0wsz2b90g4` delivery الهفوف, 6 × صحون زجاج, 73.50 (recovered from `missing_field` «الحين» and `below_minimum` 48.75 → caller added one); 6248 `conv_6301m6bst7v8e7drn5b495aby1s0` delivery المبرز, 4 × ترمس قهوة, 74.00; 3437 `conv_4001m6bsxnr9f8mbb7ejtn0m5v91` pickup, 2 → 3 × قدر ضغط corrected at read-back, re-quoted 29.50 → 44.25. Every order: `quote_order` before `create_order`, `conversation_id` + `quote_id` stored, order id read digit by digit, `end_call` after. **Defect found:** call 3 read the phone back with 9 digits and the caller said yes (stored number was right). Fix: step 3 reads the phone in 3-3-4 groups and counts 10 digits; re-pushed, not yet re-tested by voice |
+| T089 out of stock | PASS: `conv_9301m6bt0vdpfnfv5b4scavjmjvc` «أكواب زجاج» → «خلصت حالياً», alternatives offered, no order |
+| T090 mixed-language | PARTIAL: in `conv_6301…` Ahmed said «أبي delivery للمبرز»; ASR wrote «بدي نبرر المبرز», so the English word never reached the LLM. Sara stayed Arabic and booked المبرز delivery correctly |
+| Drift | PASS: after the last push, live prompt, `tool_ids`, `asr.keywords`, voice and LLM equal `agent/agent_configs/sara.json` (the CLI 1.7.1 dry-run always says "force override", so it is no drift check) |
+| T091 usage | Phase 2 calls on 2026-11-01: 5 calls, 466 s (7.8 min): 77 + 149 + 110 + 99 + 31 s |
+| Call 1 `conv_9501m6brykn5eh8sa18rwa289t3z` | 77 s, no order: she asked for the district and refused «حي برادة» herself. Fixed in step 4 (ask for one of the 4 towns; `quote_order` decides); call 7088 then asked for the town correctly |
 
 Deviations: CLI 1.7.1 has no `tools push` and inline `prompt.tools` is deprecated, so tools are workspace
 tools upserted by name over REST (`scripts/push_tools.py`) and attached by `tool_ids`. `tunnel.sh` no longer

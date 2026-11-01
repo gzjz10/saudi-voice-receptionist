@@ -4,7 +4,7 @@
             "config": "agent_configs/sara.json",
             "id": "agent_8601m61c0e71fyca17s7cvytjs8s",
             "branch_id": "agtbrch_5301m61c0fbbfkm9jtd7pn40eb34",
-            "version_id": "agtvrsn_5101m6bs51hretfsxx00a2hf7m5w"
+            "version_id": "agtvrsn_0901m6bt3gx1fbxa7sexbsfpez1p"
         },
         {
             "config": "agent_configs/sara_stt_probe.json",
