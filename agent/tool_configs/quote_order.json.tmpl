@@ -1,0 +1,73 @@
+{
+  "type": "webhook",
+  "name": "quote_order",
+  "description": "Price the basket without saving anything. Call before the final read-back and again after any change. The only source of the total.",
+  "response_timeout_secs": 10,
+  "pre_tool_speech": "force",
+  "api_schema": {
+    "url": "{{TOOLS_BASE_URL}}/tools/quote_order",
+    "method": "POST",
+    "content_type": "application/json",
+    "request_headers": {
+      "X-Tool-Secret": {
+        "secret_id": "{{TOOL_SECRET_ID}}"
+      }
+    },
+    "request_body_schema": {
+      "type": "object",
+      "required": [
+        "items",
+        "fulfillment",
+        "time_slot"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "Every item in the order",
+          "items": {
+            "type": "object",
+            "description": "One order line",
+            "required": [
+              "product_id",
+              "qty"
+            ],
+            "properties": {
+              "product_id": {
+                "type": "string",
+                "description": "product_id from get_product matches"
+              },
+              "qty": {
+                "type": "integer",
+                "description": "Quantity from 1 to 20"
+              }
+            }
+          }
+        },
+        "fulfillment": {
+          "type": "string",
+          "enum": [
+            "pickup",
+            "delivery"
+          ],
+          "description": "pickup from the store or delivery"
+        },
+        "area": {
+          "type": "string",
+          "description": "Delivery area as the caller said it, e.g. المبرز; leave out for pickup"
+        },
+        "time_slot": {
+          "type": "string",
+          "description": "Time as the caller said it in Arabic, e.g. بكرة العصر"
+        },
+        "now": {
+          "type": "string",
+          "dynamic_variable": "system__time_utc"
+        },
+        "conversation_id": {
+          "type": "string",
+          "dynamic_variable": "system__conversation_id"
+        }
+      }
+    }
+  }
+}

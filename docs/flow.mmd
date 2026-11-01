@@ -1,0 +1,23 @@
+%% Sara's call flow (prompts/system_v1.md, plan.md §8). Tool names are webhook tools on the backend.
+flowchart TD
+    start([Greeting: هلا والله، معكم سارة من مقاضينا]) --> intent{What does the caller want?}
+
+    intent -->|price / stock| gp[get_product] --> clar{needs_clarification?}
+    clar -->|yes| ask[One question, at most 2 options] --> gp
+    clar -->|no| said[Say say_ar; offer to add] --> intent
+
+    intent -->|store facts| si[get_store_info] --> intent
+    intent -->|order status| st[check_order_status: order_id OR phone] --> intent
+    intent -->|off-topic / not sold| off[One polite line, redirect] --> intent
+
+    intent -->|order| items[Items + qty via get_product] --> name[Name]
+    name --> phone[Phone, read back digit by digit] --> ful{Pickup or delivery?}
+    ful -->|delivery| area[Area] --> slot[Time slot]
+    ful -->|pickup| slot
+    slot --> quote[quote_order]
+    quote -->|error: below_minimum / area_not_served| fix[Say say_ar, ask what to change] --> items
+    quote -->|ok| readback[Read back items, total_spoken_ar, slot: تمام كذا؟]
+    readback -->|correction| items
+    readback -->|clear yes| create[create_order with quote_id] --> oid[Read order number digit by digit] --> bye([end_call])
+
+    intent -->|asks for staff / angry x2 / not understood x2 / cancel| esc[escalate_to_human] --> cb[Say callback line] --> bye

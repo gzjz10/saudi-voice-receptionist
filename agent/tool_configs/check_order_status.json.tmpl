@@ -1,0 +1,35 @@
+{
+  "type": "webhook",
+  "name": "check_order_status",
+  "description": "Order status by 4-digit order number, or the latest orders by phone. Send exactly one of order_id or phone.",
+  "response_timeout_secs": 10,
+  "pre_tool_speech": "auto",
+  "api_schema": {
+    "url": "{{TOOLS_BASE_URL}}/tools/check_order_status",
+    "method": "POST",
+    "content_type": "application/json",
+    "request_headers": {
+      "X-Tool-Secret": {
+        "secret_id": "{{TOOL_SECRET_ID}}"
+      }
+    },
+    "request_body_schema": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "Four-digit order number, digits only; leave out if using phone"
+        },
+        "phone": {
+          "type": "string",
+          "description": "رقم جوال المتصل عشر أرقام يبدأ بـ 05، أرقام بس بدون مسافات; leave out if using order_id"
+        },
+        "conversation_id": {
+          "type": "string",
+          "dynamic_variable": "system__conversation_id"
+        }
+      }
+    }
+  }
+}

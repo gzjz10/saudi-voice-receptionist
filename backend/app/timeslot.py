@@ -43,7 +43,7 @@ class Slot:
 
 
 def parse_now(now: str | None) -> datetime:
-    """`system__time` as ISO 8601 (format UNVERIFIED until Phase 2); else the server clock."""
+    """`system__time_utc` (ISO 8601, bound by the quote_order tool config); else the server clock."""
     if now:
         try:
             dt = datetime.fromisoformat(now.replace("Z", "+00:00"))

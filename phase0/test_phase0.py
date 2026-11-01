@@ -69,16 +69,19 @@ def winner_voice_id():
     return re.search(r"^\| A \| `([A-Za-z0-9]{20})`", text, re.M).group(1)
 
 
-def test_agent_config_has_winner_voice_and_no_tools():
+def test_agent_configs_have_winner_voice_and_probe_has_no_tools():
     for name in ("sara.json", "sara_stt_probe.json"):
         cfg = json.loads((REPO / "agent" / "agent_configs" / name).read_text(encoding="utf-8"))
         cc = cfg["conversation_config"]
         assert cc["agent"]["language"] == "ar"
         assert cc["tts"].get("voice_id") == winner_voice_id()
-        assert not cc["agent"]["prompt"].get("tool_ids") and not cc["agent"]["prompt"].get("tools")
+        assert not cc["agent"]["prompt"].get("tools")
+        if name == "sara_stt_probe.json":
+            assert not cc["agent"]["prompt"].get("tool_ids")
+    # Sara carries the Phase 2 prompt since 2026-11-01.
     sara = json.loads((REPO / "agent" / "agent_configs" / "sara.json").read_text(encoding="utf-8"))
     assert sara["conversation_config"]["agent"]["prompt"]["prompt"] == \
-        (REPO / "prompts" / "system_v0.md").read_text(encoding="utf-8")
+        (REPO / "prompts" / "system_v1.md").read_text(encoding="utf-8")
 
 
 def test_no_voice_ids_in_tracked_phase0_docs():

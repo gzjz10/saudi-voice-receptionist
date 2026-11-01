@@ -1,0 +1,53 @@
+{
+  "type": "webhook",
+  "name": "get_store_info",
+  "description": "Store facts: opening hours, location, delivery areas and fee, returns policy, store phone.",
+  "response_timeout_secs": 10,
+  "pre_tool_speech": "auto",
+  "api_schema": {
+    "url": "{{TOOLS_BASE_URL}}/tools/get_store_info",
+    "method": "POST",
+    "content_type": "application/json",
+    "request_headers": {
+      "X-Tool-Secret": {
+        "secret_id": "{{TOOL_SECRET_ID}}"
+      }
+    },
+    "request_body_schema": {
+      "type": "object",
+      "required": [
+        "topic"
+      ],
+      "properties": {
+        "topic": {
+          "type": "string",
+          "enum": [
+            "hours",
+            "location",
+            "delivery",
+            "returns",
+            "phone"
+          ],
+          "description": "Which fact the caller asked about"
+        },
+        "day": {
+          "type": "string",
+          "enum": [
+            "sat",
+            "sun",
+            "mon",
+            "tue",
+            "wed",
+            "thu",
+            "fri"
+          ],
+          "description": "Only for hours on a specific day, e.g. fri for Friday; leave out otherwise"
+        },
+        "conversation_id": {
+          "type": "string",
+          "dynamic_variable": "system__conversation_id"
+        }
+      }
+    }
+  }
+}

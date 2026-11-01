@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>مقاضينا · سارة</title>
+  <meta name="description" content="Demo: Sara, a Saudi-Arabic voice receptionist for a fictional household-goods store in Al-Ahsa.">
+  <style>
+    :root { --bg: #f7f5f0; --ink: #1d2b2a; --muted: #5d6b69; --accent: #0f4c4a; --warn-bg: #fff4d6; --warn-ink: #6b4e00; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #121817; --ink: #e8eeed; --muted: #9fb0ad; --accent: #5fc2bc; --warn-bg: #3a3014; --warn-ink: #f3dc96; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink);
+           font: 18px/1.7 "Noto Kufi Arabic", "Segoe UI", Tahoma, sans-serif; }
+    .banner { background: var(--warn-bg); color: var(--warn-ink); padding: 10px 16px; text-align: center; font-size: 15px; }
+    main { max-width: 640px; margin: 0 auto; padding: 40px 16px 160px; }
+    h1 { color: var(--accent); margin: 0 0 4px; font-size: 32px; }
+    .sub { color: var(--muted); margin: 0 0 28px; }
+    ul { padding-inline-start: 20px; }
+    li { margin-bottom: 6px; }
+    .note { color: var(--muted); font-size: 15px; margin-top: 28px; }
+  </style>
+</head>
+<body>
+  <div class="banner" role="note">نسخة تجريبية: المحل والأسعار والطلبات كلها غير حقيقية. لا تعطون معلومات حقيقية.</div>
+  <main>
+    <h1>مقاضينا</h1>
+    <p class="sub">أدوات منزلية بالأحساء · كلموا سارة، موظفة الاستقبال الصوتية</p>
+    <p>اضغطوا زر المكالمة تحت، واسمحوا للمتصفح يستخدم المايك. تقدرون:</p>
+    <ul>
+      <li>تسألون عن سعر منتج أو توفره، مثل: بكم الصحون الزجاج؟</li>
+      <li>تطلبون وتختارون استلام من المحل أو توصيل للهفوف والمبرز والعيون والجفر</li>
+      <li>تسألون عن حالة طلب برقمه أو برقم جوالكم</li>
+      <li>تسألون عن الدوام والموقع والاسترجاع، أو تطلبون موظف</li>
+    </ul>
+    <p class="note">استخدموا اسم ورقم جوال وهمي، مثل ٠٥٠٠٠٠٠٠٠١.</p>
+  </main>
+  <!-- Agent id from agent/agents.json (sara.json). Widget pinned per research R14: newest release >= 14 days old on 2026-11-01. -->
+  <elevenlabs-convai agent-id="agent_8601m61c0e71fyca17s7cvytjs8s"></elevenlabs-convai>
+  <script src="https://unpkg.com/@elevenlabs/convai-widget-embed@0.20.0/dist/index.js" async type="text/javascript"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "type": "webhook",
+  "name": "get_product",
+  "description": "Look up a product the caller mentioned: price, stock, unit. Use for any price or availability question and before adding an item to an order.",
+  "response_timeout_secs": 10,
+  "pre_tool_speech": "auto",
+  "api_schema": {
+    "url": "{{TOOLS_BASE_URL}}/tools/get_product",
+    "method": "POST",
+    "content_type": "application/json",
+    "request_headers": {
+      "X-Tool-Secret": {
+        "secret_id": "{{TOOL_SECRET_ID}}"
+      }
+    },
+    "request_body_schema": {
+      "type": "object",
+      "required": [
+        "query"
+      ],
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The product name exactly as the caller said it, in Arabic"
+        },
+        "conversation_id": {
+          "type": "string",
+          "dynamic_variable": "system__conversation_id"
+        }
+      }
+    }
+  }
+}

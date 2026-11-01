@@ -279,12 +279,12 @@ seeded SQLite, the Arabic matcher, spoken numbers and a tunnel.
 
 **Independent test**: the T092 checkpoint.
 
-- [ ] T077 [US1] Write `prompts/system_v1.md` in Saudi Arabic with plural address, using the root `plan.md` §8 sections (# الشخصية … # أمثلة), the 10 non-negotiable rules, the order flow 1–7 with `quote_order` before read-back, a filler pool of 4–5 variants for slow tools, the 2-consecutive-English-turns switch rule, and the demo clause «نسخة تجريبية، الأسعار غير حقيقية». Fix «جملتين قصيرة» → «جملتين قصيرتين». Prices in # أمثلة are generated from `data/products.json`
+- [ ] T077 [US1] Write `prompts/system_v1.md` in Saudi Arabic with plural address, using the root `plan.md` §8 sections (# الشخصية … # أمثلة), the 10 non-negotiable rules, the order flow 1–7 with `quote_order` before read-back, a filler pool of 4–5 variants for slow tools, the Arabic-only rule (no language switch; replaces the old 2-English-turns switch), and the demo clause «نسخة تجريبية، الأسعار غير حقيقية». Fix «جملتين قصيرة» → «جملتين قصيرتين». Prices in # أمثلة are generated from `data/products.json`
 - [ ] T078 [P] [US1] Write `agent/tool_configs/get_product.json.tmpl` and `agent/tool_configs/get_store_info.json.tmpl` per research R12: `api_schema.url` = `{{TOOLS_BASE_URL}}/tools/<name>`, `request_headers.X-Tool-Secret` = `{"secret_id": …}`, the `conversation_id` body property with `dynamic_variable: system__conversation_id`, `response_timeout_secs` ∈ 5–300, and `pre_tool_speech` set as decided
 - [ ] T079 [P] [US2] Write `agent/tool_configs/quote_order.json.tmpl` and `agent/tool_configs/create_order.json.tmpl` (same rules as T078; `now` bound to `system__time`)
 - [ ] T080 [P] [US3] Write `agent/tool_configs/check_order_status.json.tmpl` and `agent/tool_configs/escalate_to_human.json.tmpl` (same rules as T078)
 - [ ] T081 [US4] Extend `scripts/build_agent_config.py --profile full` with the agent settings baseline (review amendment 8):
-  - `language_presets` incl. `en` and `built_in_tools.language_detection`, described as English-only trigger;
+  - ~~`language_presets` incl. `en` and `language_detection`~~ dropped: Arabic only (2026-10-28);
   - `turn.turn_timeout`, `turn.silence_end_call_timeout` and `conversation.max_duration_seconds: 240`;
   - `auth.allowlist` (Pages host + `localhost:8000`), `require_origin_header: true`;
   - `call_limits.daily_limit: 20`, `agent_concurrency_limit: 2`, `privacy.retention_days: 30`;
@@ -292,14 +292,14 @@ seeded SQLite, the Arabic matcher, spoken numbers and a tunnel.
 
   Validate every field with `python agent/validate_configs.py --allow-voice-id`
 - [ ] T082 KEY: create the ElevenLabs secret for `TOOL_SECRET` via `npx elevenlabs agents secrets create` (check `--schema` first) and put only its `secret_id` into the templates' render input in `.env` (constitution V)
-- [ ] T083 KEY: LLM shortlist via `npx elevenlabs agents llm list`. Pick one Gemini Flash and one Claude Haiku class model, measure latency and Arabic quality on 3 test calls, and record the pick and reason in research.md (new R19) and `docs/STATUS.md`
+- [ ] T083 DEFERRED to Phase 4 (2026-11-01): keep `gemini-2.5-flash` (still in `agents llm list`, passed the 0b simulation) and compare models on the v1 results instead of 3 extra calls. Original: LLM shortlist via `npx elevenlabs agents llm list`. Pick one Gemini Flash and one Claude Haiku class model, measure latency and Arabic quality on 3 test calls, and record the pick and reason in research.md (new R19) and `docs/STATUS.md`
 - [ ] T084 [US2] Build `demo/index.html` with `<elevenlabs-convai>` from `@elevenlabs/convai-widget-embed` pinned to an exact version ≥ 14 days old (research R14), a visible demo banner (prices not real), and the store name per FR-073. Serve it with `python -m http.server 8000`, never `file://`
 - [ ] T085 [P] [US2] Write `docs/flow.mmd`, a Mermaid activity diagram (greeting → intent → branches → quote → read-back → confirm → create → end / escalate)
 - [ ] T086 [P] Publish `demo/` on GitHub Pages (workflow or branch setting) and record the Pages host in the `auth.allowlist` input
 - [ ] T087 KEY: on the Mac, run `scripts/tunnel.sh`, then from `agent/` run `npx elevenlabs agents pull`, then `agents push && tools push && tests push`. Afterwards run `agents push --dry-run` and confirm no drift
 - [ ] T088 [US2] HUMAN: 3 consecutive voice orders on the hosted page (1 pickup, 1 delivery, 1 with a mid-call correction). Claude checks that each SQLite row has `conversation_id` from `system__conversation_id`, a `quote_order` call before `create_order`, a spoken read-back and a digit-by-digit order id (verifies research R12)
 - [ ] T089 [US1] HUMAN: one call asking for an out-of-stock item, which must be spoken as unavailable with at most one alternative
-- [ ] T090 [US4] HUMAN: one English-only call that must switch to English (E10) and one mixed call «أبي delivery للمبرز» that must stay Arabic (E11). Record whether ASR switched too (settles research R9)
+- [ ] T090 [US4] HUMAN: one mixed call «أبي delivery للمبرز» that must stay Arabic (E11). E10 (English switch) dropped: Arabic only
 - [ ] T091 Log the call minutes used in Phase 2 in `docs/STATUS.md` (read from the usage counter) and disable the agent or demo between sessions
 
 - [ ] T092 **CHECKPOINT: PHASE 2 GATE (HARD).** PASS requires:

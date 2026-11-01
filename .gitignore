@@ -10,3 +10,4 @@ node_modules/
 backend/logs/
 backend/data/
 .pytest_cache/
+agent/tool_configs/*.json

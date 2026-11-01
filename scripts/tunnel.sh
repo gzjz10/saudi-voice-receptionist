@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Expose the local backend (scripts/dev.sh, port 8000) through a cloudflared quick tunnel.
-# Writes the new hostname to .env as TOOLS_BASE_URL and renders agent/tool_configs/*.json
-# from *.json.tmpl when templates exist (Phase 2). Quick-tunnel hostnames change every run.
+# Writes the new hostname to .env as TOOLS_BASE_URL. Quick-tunnel hostnames change every run,
+# so after each start run scripts/push_tools.py (renders the tool configs and updates the tools).
 # Ctrl-C stops the tunnel.
 set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -26,12 +26,8 @@ else
   printf 'TOOLS_BASE_URL=%s\n' "$URL" >> .env
 fi
 echo "TOOLS_BASE_URL=$URL (written to .env)"
-shopt -s nullglob
-for t in agent/tool_configs/*.json.tmpl; do
-  sed "s#{{TOOLS_BASE_URL}}#$URL#g" "$t" > "${t%.tmpl}"
-  echo "rendered ${t%.tmpl}"
-done
 cat <<MSG
+Next (Phase 2): .venv/bin/python scripts/push_tools.py   # points Sara's 6 tools at this URL
 Check from another network (expect 200, then 401):
   curl -s -o /dev/null -w '%{http_code}\n' -X POST $URL/tools/get_store_info -H 'Content-Type: application/json' -H "X-Tool-Secret: \$TOOL_SECRET" -d '{"topic":"hours"}'
   curl -s -o /dev/null -w '%{http_code}\n' -X POST $URL/tools/get_store_info -H 'Content-Type: application/json' -d '{"topic":"hours"}'

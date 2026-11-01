@@ -1,0 +1,43 @@
+{
+  "type": "webhook",
+  "name": "create_order",
+  "description": "Save the order. Only after the full read-back and a clear yes from the caller.",
+  "response_timeout_secs": 10,
+  "pre_tool_speech": "force",
+  "api_schema": {
+    "url": "{{TOOLS_BASE_URL}}/tools/create_order",
+    "method": "POST",
+    "content_type": "application/json",
+    "request_headers": {
+      "X-Tool-Secret": {
+        "secret_id": "{{TOOL_SECRET_ID}}"
+      }
+    },
+    "request_body_schema": {
+      "type": "object",
+      "required": [
+        "quote_id",
+        "customer_name",
+        "phone"
+      ],
+      "properties": {
+        "quote_id": {
+          "type": "string",
+          "description": "quote_id from the latest quote_order result"
+        },
+        "customer_name": {
+          "type": "string",
+          "description": "The caller's name"
+        },
+        "phone": {
+          "type": "string",
+          "description": "رقم جوال المتصل عشر أرقام يبدأ بـ 05، أرقام بس بدون مسافات"
+        },
+        "conversation_id": {
+          "type": "string",
+          "dynamic_variable": "system__conversation_id"
+        }
+      }
+    }
+  }
+}

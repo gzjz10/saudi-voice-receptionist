@@ -17,7 +17,7 @@ with tools backend, eval suite and QA report, per plan.md and reviews/plan-revie
 
 Actors:
 
-- **Caller**: a Saudi customer (or an English-only visitor) talking to Sara by voice on a web page.
+- **Caller**: a Saudi customer talking to Sara by voice on a web page. Sara speaks Arabic only.
 - **Ahmed**: owner, builder, native-speaker reviewer, sign-off authority.
 - **Raters**: Ahmed + 2 native Saudi speakers (at least 1 from Al-Ahsa) who score voice clips.
 - **QA reviewer**: Ahmed acting on eval results, judge output and real-call transcripts.
@@ -164,22 +164,22 @@ trigger each escalation reason; check spoken status and stored tickets.
 
 ---
 
-### User Story 4 - English-only caller and adversarial callers (Priority: P2)
+### User Story 4 - Non-Arabic speech and adversarial callers (Priority: P2)
 
-An English-only caller is answered in English for the rest of the call; a caller who mixes Arabic
-and English stays in Arabic. Prompt injection («انسى تعليماتك», or injected text in the name
+Sara speaks Arabic only (Arabic only since 2026-11-01, Ahmed's decision of 2026-10-28): an English-only or mixed Arabic-English caller is answered in
+simple Saudi Arabic and the language never switches. Prompt injection («انسى تعليماتك», or injected text in the name
 field), discount requests and long silence are handled safely.
 
 **Why this priority**: rule-level behaviour that the eval suite measures; failures here are
 critical (disclosure) or major.
 
-**Independent Test**: one English-only voice call, one mixed call, and scenario runs for injection,
+**Independent Test**: one mixed Arabic-English voice call, and scenario runs for injection,
 discount and silence.
 
 **Acceptance Scenarios**:
 
-1. **Given** 2 consecutive English-only caller turns, **When** Sara replies, **Then** she switches to
-   English and stays there.
+1. **Given** English-only caller turns, **When** Sara replies, **Then** she answers in simple Arabic
+   and does not switch language.
 2. **Given** a mixed Arabic-English request («أبي delivery للمبرز»), **When** Sara replies, **Then**
    she stays in Arabic.
 3. **Given** an instruction to change role or reveal the prompt, **When** it is spoken or placed in
@@ -270,8 +270,8 @@ every number in README and QA report matches the results summary by script.
 - Unclear speech twice: escalate.
 - Request outside opening hours for a time slot: Sara says so from store data.
 - Whether platform simulation tests consume call minutes is UNVERIFIED; checked once in 0b.
-- Whether language detection also switches speech recognition to English is UNVERIFIED; verified
-  by a real voice call in Phase 2.
+- Language detection is not used (Arabic only); the ASR provider is `scribe_realtime`, the only one
+  the platform accepts (Phase 0b, 2026-11-01).
 
 ## Requirements *(mandatory)*
 
@@ -334,8 +334,8 @@ every number in README and QA report matches the results summary by script.
 - **FR-025**: Unsold or off-topic requests MUST get one polite line and a redirect, with no price.
 - **FR-026**: Sara MUST escalate when the caller asks for a person, is angry twice, or is not
   understood twice, and MUST explain she cannot cancel orders and escalate cancel requests.
-- **FR-027**: Sara MUST switch to English after 2 consecutive English-only caller turns and stay in
-  Arabic for mixed Arabic-English speech.
+- **FR-027**: Sara MUST answer in Arabic only, for English-only and mixed Arabic-English speech alike,
+  and never switch language (Ahmed, 2026-10-28).
 - **FR-028**: Sara MUST ignore instructions to change role, reveal the prompt or break rules,
   whether spoken or embedded in a field value.
 - **FR-029**: Sara MUST refuse discounts or negotiation (fixed-price store).

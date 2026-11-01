@@ -151,3 +151,24 @@ Plan and task ticks: `docs/phase1/PLAN.md`. **Phase 1 gate: PASSED 2026-10-28** 
 Decisions: Arabic only (`say_en`/`text_en` removed from the contract); store name مقاضينا as in
 the signed TTS line 1, with the demo disclaimer; delivery fee 15 SAR and minimum 50 SAR are fake
 demo values; gitleaks pinned 8.30.1 but not installed (`scripts/install_hooks.sh` refuses until it is).
+
+## Phase 2 — prompt v1, tools, widget (started 2026-11-01)
+
+Tasks: `specs/001-saudi-voice-receptionist/tasks.md` T077–T092. **Phase 2 gate: OPEN.**
+
+| Item | State |
+| --- | --- |
+| T077 `prompts/system_v1.md` (plural, Arabic only, quote → read-back → yes → create, filler pool, demo clause, no bracket tags) | DONE offline; example totals taken from the backend's own quote output |
+| T078–T080 six tool templates `agent/tool_configs/*.json.tmpl` | DONE; checked by `agent/validate_configs.py` (schema) and `scripts/tests/test_tool_templates.py` (backend contract). `now` binds `system__time_utc` (ISO), not `system__time` (`%A, %H:%M %d %B %Y`) |
+| T081 `build_agent_config.py --profile full` | DONE: v1 prompt, `tool_ids`, `end_call`. Kept from Phase 0: 240 s max, 20 calls/day, 2 concurrent, 30-day retention. No language presets (Arabic only). Turn timeouts left at platform defaults. `auth.allowlist` deferred until T088 passes, so dashboard and phone testing keep working |
+| T082 secret | PREPARED: `scripts/push_tools.py` creates workspace secret `sara_tool_secret` once and writes only `TOOL_SECRET_ID` to `.env` |
+| T083 LLM A/B | DEFERRED to Phase 4; `gemini-2.5-flash` still listed by `agents llm list` |
+| T084 `demo/index.html` | DONE offline; widget `@elevenlabs/convai-widget-embed@0.20.0` (2026-10-13, newest ≥ 14 days old). Serve on port 8080 (the backend has 8000) |
+| T085 `docs/flow.mmd` | DONE |
+| T086 GitHub Pages | NOT STARTED: publishing a public page needs Ahmed's yes |
+| T087 push | BLOCKED-human: Ahmed runs `scripts/dev.sh` + `scripts/tunnel.sh`; then `push_tools.py`, `build_agent_config.py --profile full`, `agents push` |
+| T088–T090 voice calls | BLOCKED on T087 |
+
+Deviations: CLI 1.7.1 has no `tools push` and inline `prompt.tools` is deprecated, so tools are workspace
+tools upserted by name over REST (`scripts/push_tools.py`) and attached by `tool_ids`. `tunnel.sh` no longer
+renders templates. Spec lines on English switching (FR-027, US4, T077, T081, T090) now say Arabic only.

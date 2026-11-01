@@ -1,0 +1,53 @@
+{
+  "type": "webhook",
+  "name": "escalate_to_human",
+  "description": "Open a callback ticket for a staff member: caller asked for a person, was angry twice, was not understood twice, or wants to cancel an order.",
+  "response_timeout_secs": 10,
+  "pre_tool_speech": "auto",
+  "api_schema": {
+    "url": "{{TOOLS_BASE_URL}}/tools/escalate_to_human",
+    "method": "POST",
+    "content_type": "application/json",
+    "request_headers": {
+      "X-Tool-Secret": {
+        "secret_id": "{{TOOL_SECRET_ID}}"
+      }
+    },
+    "request_body_schema": {
+      "type": "object",
+      "required": [
+        "reason",
+        "summary"
+      ],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "enum": [
+            "asked_for_human",
+            "angry",
+            "not_understood",
+            "cancel_request",
+            "other"
+          ],
+          "description": "Why the caller is escalated"
+        },
+        "summary": {
+          "type": "string",
+          "description": "One short Arabic line on what the caller needs"
+        },
+        "customer_name": {
+          "type": "string",
+          "description": "Caller's name if known; leave out otherwise"
+        },
+        "phone": {
+          "type": "string",
+          "description": "رقم جوال المتصل عشر أرقام يبدأ بـ 05، أرقام بس بدون مسافات; leave out if unknown"
+        },
+        "conversation_id": {
+          "type": "string",
+          "dynamic_variable": "system__conversation_id"
+        }
+      }
+    }
+  }
+}
