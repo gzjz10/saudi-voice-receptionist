@@ -30,6 +30,9 @@ def test_get_product_out_of_stock_suggests(call):
     assert r["status"] == "ok" and r["matches"][0]["in_stock"] is False
     assert 1 <= len(r["suggestions"]) <= 2 and all(s["in_stock"] for s in r["suggestions"])
     assert "خلصت" in r["say_ar"]
+    # FR: spoken line offers at most one alternative (the first suggestion).
+    spoken = [s["name_ar"] for s in r["suggestions"] if s["name_ar"] in r["say_ar"]]
+    assert spoken == [r["suggestions"][0]["name_ar"]]
 
 
 def test_get_product_not_found(call):

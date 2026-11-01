@@ -94,8 +94,8 @@ def get_product(req: GetProductRequest) -> dict:
     if not top["in_stock"]:
         alts = _alternatives(top["product_id"])
         say = f"للأسف {top['name_ar']} خلصت حالياً"
-        if alts:
-            say += "، عندنا " + " و".join(a["name_ar"] for a in alts)
+        if alts:  # speak one alternative only (spec US1 scenario); the rest stay in suggestions
+            say += f"، عندنا بداله {alts[0]['name_ar']}"
         return ok(say, matches=matches, needs_clarification=False, suggestions=alts)
     p = products()[top["product_id"]]
     say = f"{p['name_ar']} موجودة، {p['unit']} {bi(top['price_spoken_ar'])}"

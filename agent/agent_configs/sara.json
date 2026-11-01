@@ -59,6 +59,18 @@
     "call_limits": {
       "daily_limit": 20,
       "agent_concurrency_limit": 2
+    },
+    "auth": {
+      "enable_auth": false,
+      "allowlist": [
+        {
+          "hostname": "saudi-voice-receptionist.maqadeena-purchase-order.workers.dev"
+        },
+        {
+          "hostname": "localhost:8080"
+        }
+      ],
+      "require_origin_header": true
     }
   },
   "tags": [
