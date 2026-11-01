@@ -11,3 +11,9 @@ backend/logs/
 backend/data/
 .pytest_cache/
 agent/tool_configs/*.json
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example

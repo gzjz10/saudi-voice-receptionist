@@ -1,3 +1,28 @@
 {
-    "tools": []
+    "tools": [
+        {
+            "name": "check_order_status",
+            "id": "tool_8901m6bqtkdbepct6g783v2p5xgy"
+        },
+        {
+            "name": "create_order",
+            "id": "tool_8201m6bqtn26eaz8bxmtzk77aajm"
+        },
+        {
+            "name": "escalate_to_human",
+            "id": "tool_3001m6bqtnrcfa1t9bmxsvh3g62g"
+        },
+        {
+            "name": "get_product",
+            "id": "tool_0701m6bqtqbdf8ytvjehfjpzgqgb"
+        },
+        {
+            "name": "get_store_info",
+            "id": "tool_1501m6bqtrzxejbbs97q87pfq3wj"
+        },
+        {
+            "name": "quote_order",
+            "id": "tool_8901m6bqttj4ecea9x5ynfe122g1"
+        }
+    ]
 }

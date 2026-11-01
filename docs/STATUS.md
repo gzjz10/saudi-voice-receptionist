@@ -161,13 +161,13 @@ Tasks: `specs/001-saudi-voice-receptionist/tasks.md` T077–T092. **Phase 2 gate
 | T077 `prompts/system_v1.md` (plural, Arabic only, quote → read-back → yes → create, filler pool, demo clause, no bracket tags) | DONE offline; example totals taken from the backend's own quote output |
 | T078–T080 six tool templates `agent/tool_configs/*.json.tmpl` | DONE; checked by `agent/validate_configs.py` (schema) and `scripts/tests/test_tool_templates.py` (backend contract). `now` binds `system__time_utc` (ISO), not `system__time` (`%A, %H:%M %d %B %Y`) |
 | T081 `build_agent_config.py --profile full` | DONE: v1 prompt, `tool_ids`, `end_call`. Kept from Phase 0: 240 s max, 20 calls/day, 2 concurrent, 30-day retention. No language presets (Arabic only). Turn timeouts left at platform defaults. `auth.allowlist` deferred until T088 passes, so dashboard and phone testing keep working |
-| T082 secret | PREPARED: `scripts/push_tools.py` creates workspace secret `sara_tool_secret` once and writes only `TOOL_SECRET_ID` to `.env` |
+| T082 secret | DONE 2026-11-01: `push_tools.py` created workspace secret `sara_tool_secret`; only `TOOL_SECRET_ID` is in `.env` |
 | T083 LLM A/B | DEFERRED to Phase 4; `gemini-2.5-flash` still listed by `agents llm list` |
 | T084 `demo/index.html` | DONE offline; widget `@elevenlabs/convai-widget-embed@0.20.0` (2026-10-13, newest ≥ 14 days old). Serve on port 8080 (the backend has 8000) |
 | T085 `docs/flow.mmd` | DONE |
-| T086 GitHub Pages | NOT STARTED: publishing a public page needs Ahmed's yes |
-| T087 push | BLOCKED-human: Ahmed runs `scripts/dev.sh` + `scripts/tunnel.sh`; then `push_tools.py`, `build_agent_config.py --profile full`, `agents push` |
-| T088–T090 voice calls | BLOCKED on T087 |
+| T086 public demo page | DONE 2026-11-01 with Ahmed's yes, on Cloudflare instead of GitHub Pages: static-assets Worker `saudi-voice-receptionist` (`wrangler.jsonc`, serves only `demo/`) at https://saudi-voice-receptionist.maqadeena-purchase-order.workers.dev. Tools work only while `dev.sh` + the tunnel run on the Mac |
+| T087 push | DONE 2026-11-01: 6 tools in `agent/tools.json`, agent renamed `Sara`; live read-back: 6 `tool_ids`, only `end_call` enabled, prompt == `system_v1.md`; tunnel 200 with secret, 401 without. `asr.keywords` = مقاضينا + the 4 towns (Phase 0 carry-over) |
+| T088–T090 voice calls | IN PROGRESS. Call 1 `conv_9501m6brykn5eh8sa18rwa289t3z` (77 s, no order): product + price right, but she asked for the district and refused «حي برادة» herself. Fix: step 4 now asks for one of the 4 towns and leaves the area decision to `quote_order`; re-pushed |
 
 Deviations: CLI 1.7.1 has no `tools push` and inline `prompt.tools` is deprecated, so tools are workspace
 tools upserted by name over REST (`scripts/push_tools.py`) and attached by `tool_ids`. `tunnel.sh` no longer
