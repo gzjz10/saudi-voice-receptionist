@@ -154,7 +154,7 @@ demo values; gitleaks pinned 8.30.1 but not installed (`scripts/install_hooks.sh
 
 ## Phase 2 — prompt v1, tools, widget (started 2026-11-01)
 
-Tasks: `specs/001-saudi-voice-receptionist/tasks.md` T077–T092. **Phase 2 gate: OPEN — orders, out-of-stock and drift pass; waiting on Ahmed's call on T090 (partial) and one call to re-test the phone read-back fix.**
+Tasks: `specs/001-saudi-voice-receptionist/tasks.md` T077–T092. **Phase 2 gate: OPEN — orders, out-of-stock and drift pass; waiting on one clean call that shows the phone read-back in groups, the fulfilment question and the mixed-language line (T090).**
 
 | Item | State |
 | --- | --- |
@@ -171,7 +171,8 @@ Tasks: `specs/001-saudi-voice-receptionist/tasks.md` T077–T092. **Phase 2 gate
 | T089 out of stock | PASS: `conv_9301m6bt0vdpfnfv5b4scavjmjvc` «أكواب زجاج» → «خلصت حالياً», alternatives offered, no order |
 | T090 mixed-language | PARTIAL: in `conv_6301…` Ahmed said «أبي delivery للمبرز»; ASR wrote «بدي نبرر المبرز», so the English word never reached the LLM. Sara stayed Arabic and booked المبرز delivery correctly |
 | Drift | PASS: after the last push, live prompt, `tool_ids`, `asr.keywords`, voice and LLM equal `agent/agent_configs/sara.json` (the CLI 1.7.1 dry-run always says "force override", so it is no drift check) |
-| T091 usage | Phase 2 calls on 2026-11-01: 5 calls, 466 s (7.8 min): 77 + 149 + 110 + 99 + 31 s |
+| Re-test call 7806 `conv_5201m6bt596beznrdhfcrey1g6td` | 120 s; order stored right (3 × دفاتر, pickup, 17.25) but 3 defects: (1) «[لحظة] لحظة» on almost every turn: `tts.expressive_mode` was true, so the platform asked the LLM for audio tags (the Phase 0 «[أبشروا]» carry-over); now false in `sara.json`. (2) She called `quote_order` without asking pickup or delivery (assumed pickup) and before taking the phone. (3) She took the phone after the read-back and called `create_order` without reading it back. Fix: step 6 lists the 5 things needed before `quote_order`; rule 4 forbids `create_order` before a confirmed phone read-back. Re-pushed; phone grouping and T090 still not voice-tested |
+| T091 usage | Phase 2 calls on 2026-11-01: 6 calls, 586 s (9.8 min): 77 + 149 + 110 + 99 + 31 + 120 s |
 | Call 1 `conv_9501m6brykn5eh8sa18rwa289t3z` | 77 s, no order: she asked for the district and refused «حي برادة» herself. Fixed in step 4 (ask for one of the 4 towns; `quote_order` decides); call 7088 then asked for the town correctly |
 
 Deviations: CLI 1.7.1 has no `tools push` and inline `prompt.tools` is deprecated, so tools are workspace
