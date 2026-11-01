@@ -31,6 +31,7 @@ transcripts from real calls.
 from __future__ import annotations
 
 import argparse
+import math
 import csv
 import io
 import json
@@ -437,10 +438,16 @@ def _ent(clips, cid, name):
     return [c.final.get(name, False) for c in clips if c.key == cid]
 
 
-def evaluate_run(provider: str, clips: list[ClipScore]) -> RunVerdict:
+def _scaled(n: int, speakers: int) -> int:
+    """A G.3 count over 2 speakers, scaled (rounded up) to `speakers`."""
+    return math.ceil(n * speakers / 2)
+
+
+def evaluate_run(provider: str, clips: list[ClipScore], speakers: int = 2) -> RunVerdict:
     v = RunVerdict(provider, clips)
     scored = [c for c in clips if c.scored]
-    v.complete = len(scored) == GATE["clips_per_run"] == len(clips)
+    k = speakers
+    v.complete = len(scored) == _scaled(GATE["clips_per_run"], k) == len(clips)
     n_ent = sum(len(c.final) for c in scored)
     v.entity_acc = sum(sum(c.final.values()) for c in scored) / n_ent if n_ent else 0.0
     v.intent_acc = sum(c.intent_final for c in scored) / len(scored) if scored else 0.0
@@ -448,17 +455,17 @@ def evaluate_run(provider: str, clips: list[ClipScore]) -> RunVerdict:
     v.mean_cer = sum(cers) / len(cers) if cers else None
 
     intents = sum(c.intent_final for c in scored)
-    v.checks.append(("(a) intent >= %d/20" % GATE["intent_min"],
-                     intents >= GATE["intent_min"], f"intent {intents}/{len(scored)}"))
+    v.checks.append(("(a) intent >= %d/%d" % (_scaled(GATE["intent_min"], k), 10 * k),
+                     intents >= _scaled(GATE["intent_min"], k), f"intent {intents}/{len(scored)}"))
 
     prod = [x for cid in GATE["product_ids"] for x in _ent(scored, cid, "product")]
-    v.checks.append(("(b) product >= %d/6" % GATE["product_min"],
-                     sum(prod) >= GATE["product_min"], f"{sum(prod)}/{len(prod)}"))
+    v.checks.append(("(b) product >= %d/%d" % (_scaled(GATE["product_min"], k), 3 * k),
+                     sum(prod) >= _scaled(GATE["product_min"], k), f"{sum(prod)}/{len(prod)}"))
 
     qty = _ent(scored, GATE["qty_id"], "qty")
     oid = _ent(scored, GATE["order_id_id"], "order_id")
-    v.checks.append(("(c) qty 2/2 and order id 2/2",
-                     len(qty) == 2 and all(qty) and len(oid) == 2 and all(oid),
+    v.checks.append(("(c) qty %d/%d and order id %d/%d" % (k, k, k, k),
+                     len(qty) == k and all(qty) and len(oid) == k and all(oid),
                      f"qty {sum(qty)}/{len(qty)}, order id {sum(oid)}/{len(oid)}"))
 
     total = wrong = exact = n_phone = 0
@@ -473,10 +480,10 @@ def evaluate_run(provider: str, clips: list[ClipScore]) -> RunVerdict:
             wrong += 0 if ok else max(e.digits_wrong, 1)
             exact += ok
     acc = (total - wrong) / total if total else 0.0
-    v.checks.append(("(d) phone digits >= %d%% and >= %d/4 exact"
-                     % (GATE["phone_digit_acc_min"] * 100, GATE["phone_exact_min"]),
-                     n_phone == 4 and acc >= GATE["phone_digit_acc_min"]
-                     and exact >= GATE["phone_exact_min"],
+    v.checks.append(("(d) phone digits >= %d%% and >= %d/%d exact"
+                     % (GATE["phone_digit_acc_min"] * 100, _scaled(GATE["phone_exact_min"], k), 2 * k),
+                     n_phone == 2 * k and acc >= GATE["phone_digit_acc_min"]
+                     and exact >= _scaled(GATE["phone_exact_min"], k),
                      f"{total - wrong}/{total} digits ({acc:.1%}), exact {exact}/{n_phone}"))
 
     area = _ent(scored, GATE["area_slot_id"], "area")
@@ -484,9 +491,9 @@ def evaluate_run(provider: str, clips: list[ClipScore]) -> RunVerdict:
     day = _ent(scored, GATE["hours_id"], "day")
     hrs = [c.intent_final for c in scored if c.key == GATE["hours_id"]]
     esc = [c.intent_final for c in scored if c.key == GATE["escalate_id"]]
-    e_ok = (len(area) == 2 and all(area) and all(slot) and len(day) == 2 and all(day)
-            and len(hrs) == 2 and all(hrs) and len(esc) == 2 and all(esc))
-    v.checks.append(("(e) area+slot 2/2, hours/day 2/2, escalation 2/2", e_ok,
+    e_ok = (len(area) == k and all(area) and all(slot) and len(day) == k and all(day)
+            and len(hrs) == k and all(hrs) and len(esc) == k and all(esc))
+    v.checks.append(("(e) area+slot %d/%d, hours/day %d/%d, escalation %d/%d" % ((k, k) * 3), e_ok,
                      f"area {sum(area)}/{len(area)}, slot {sum(slot)}/{len(slot)}, "
                      f"hours {sum(hrs)}/{len(hrs)}, day {sum(day)}/{len(day)}, "
                      f"escalate {sum(esc)}/{len(esc)}"))
@@ -575,15 +582,21 @@ def add_run(path: Path, rows: list[dict], provider: str) -> None:
     print(f"appended {len(base)} blank rows for asr_provider={provider} to {path}")
 
 
-def report(rows: list[dict], allow_single: bool = False, out=None) -> bool:
+def report(rows: list[dict], allow_single: bool = False, out=None, waive: tuple[str, ...] = ()) -> bool:
     out = out or sys.stdout
+    speakers = len({r["speaker"] for r in rows} - set(waive))
+    if waive:
+        print(f"speakers waived: {', '.join(waive)} -> G.3 counts scaled to {speakers} speaker(s), "
+              "rounded up", file=out)
     runs: dict[str, list[ClipScore]] = {}
     for r in rows:
+        if r["speaker"] in waive:
+            continue
         runs.setdefault(r["asr_provider"].strip() or "?", []).append(score_row(r))
 
     verdicts = []
     for provider, clips in runs.items():
-        v = evaluate_run(provider, clips)
+        v = evaluate_run(provider, clips, speakers)
         verdicts.append(v)
         print(f"\n== asr_provider: {provider} ==", file=out)
         print(f"{'id':>3} {'spk':<3} {'entities':<9} {'intent':<6} {'cer':>5}  detail", file=out)
@@ -610,7 +623,7 @@ def report(rows: list[dict], allow_single: bool = False, out=None) -> bool:
                default=None)
     print("\n== STT GATE (plan-review.md G.3, thresholds confirmed by Ahmed 2026-10-28) ==", file=out)
     if best is None:
-        print("STT GATE: INCOMPLETE - no provider has all 20 clips transcribed.", file=out)
+        print(f"STT GATE: INCOMPLETE - no provider has all {10 * speakers} clips transcribed.", file=out)
         return False
     if len(complete) < GATE["min_providers"] and not allow_single:
         print(f"best so far: {best.provider} ({'PASS' if best.passed else 'FAIL'})", file=out)
@@ -671,7 +684,9 @@ def _selftest() -> int:
     assert check_entity("product", "صحون زجاج", ["!بلاستيك"], "الصحون البلاستيك").ok is False
     assert check_entity("slot", "بكرة+العصر", [], "بكره وقت العصر").ok is True
 
-    template = read_rows(SHEET)
+    # one provider's rows of the live sheet as the template (the sheet holds real runs too)
+    sheet = read_rows(SHEET)
+    template = [r for r in sheet if r["asr_provider"] == sheet[0]["asr_provider"]]
     assert len(template) == 20 and len({r["id"] for r in template}) == 10, "sheet must be 10 x 2"
 
     def filled(provider, transcripts):
@@ -700,6 +715,9 @@ def _selftest() -> int:
     # single provider must not pass the gate without --allow-single-provider
     assert report(filled("only_one", GOOD), out=io.StringIO()) is False
     assert report(filled("only_one", GOOD), allow_single=True, out=io.StringIO()) is True
+    # S2 waived: S1's 10 good clips on two providers pass with scaled counts
+    two = filled("p1", GOOD) + filled("p2", GOOD)
+    assert report(two, out=io.StringIO(), waive=("S2",)) is True
     print("SELFTEST OK (synthetic transcripts; not a Phase 0 result)")
     return 0
 
@@ -711,6 +729,8 @@ def main(argv=None) -> int:
     ap.add_argument("--add-run", metavar="PROVIDER", help="append 20 blank rows for another asr.provider")
     ap.add_argument("--allow-single-provider", action="store_true",
                     help="judge the gate on one provider run (G.3 asks for two)")
+    ap.add_argument("--waive-speaker", action="append", default=[], metavar="SPEAKER",
+                    help="drop a speaker's rows (e.g. S2, waived by Ahmed) and scale the G.3 counts")
     ap.add_argument("--selftest", action="store_true", help="run the synthetic self-test")
     a = ap.parse_args(argv)
     if hasattr(sys.stdout, "reconfigure"):
@@ -726,7 +746,7 @@ def main(argv=None) -> int:
         return 0
     if a.fetch:
         do_fetch(a.csv, rows)
-    return 0 if report(rows, allow_single=a.allow_single_provider) else 1
+    return 0 if report(rows, allow_single=a.allow_single_provider, waive=tuple(a.waive_speaker)) else 1
 
 
 if __name__ == "__main__":

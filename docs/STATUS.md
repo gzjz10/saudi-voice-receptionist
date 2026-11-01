@@ -1,6 +1,8 @@
 # STATUS — Saudi Voice Receptionist
 
-**Phase 0 gate: OPEN — waiting for API key and raters.**
+**Phase 0 gate: PASSED 2026-11-01** — TTS GO (Nora S + eleven_v4_turbo, R1 only) and STT PASS (S1 only, `scribe_realtime`, the only provider); `docs/phase0/decision.md` signed by Ahmed. Next: Phase 2 (plan.md §14 row 2).
+
+_The sections below are the history of the gate._
 
 Updated 2026-10-27 on the Windows laptop by the Phase 0 team (leader Fable 5.1). Phase 0a (offline)
 is complete. Phase 0b has not started: no API key exists on this machine, so **no voice ID, clip,
@@ -57,7 +59,7 @@ when Phase 1 planning starts.
 | Criterion | State |
 | --- | --- |
 | Minimal agent pushed (`language: ar`, answers «تمام») | PASS (2026-10-28; ids in `agent/agents.json`) |
-| 20 clips (10 × S1 Ahmed + S2) spoken live, per provider; 2 providers | BLOCKED-key + BLOCKED-human (S2) |
+| 20 clips (10 × S1 Ahmed + S2) spoken live, per provider; 2 providers | S1 DONE 2026-11-01 on `scribe_realtime` (8/10 cards right; misses #5 phone, #10 الهفوف; see `decision.md`). S2 WAIVED by Ahmed 2026-11-01. Second provider IMPOSSIBLE: API keeps/forces `scribe_realtime` (see `decision.md`). Scorer: PASS with `--waive-speaker S2 --allow-single-provider`, accepted by Ahmed 2026-11-01 |
 | Transcripts from `GET /v1/convai/conversations/{id}` (realtime ASR) | BLOCKED-key (`--fetch` never run live) |
 | (a) ≥ 18/20 intents | not evaluated |
 | (b) product ≥ 5/6 · (c) qty 2/2, order id 2/2 · (d) ≤ 2/40 phone digits wrong, ≥ 2/4 exact · (e) #7 #8 #9 all 2/2 | not evaluated |
@@ -68,8 +70,8 @@ when Phase 1 planning starts.
 | Item | State |
 | --- | --- |
 | One Simulation test; does it bill minutes? | PASS 2026-10-28: test passed; bills credits (199), not call minutes |
-| `docs/phase0/decision.md` with LLM, asr.provider, tts.model_id, voice_id, settings, CLI 1.7.1, seed, minutes | BLOCKED (0b output) |
-| Ahmed signs `decision.md`; STATUS updated with minutes | BLOCKED-human |
+| `docs/phase0/decision.md` with LLM, asr.provider, tts.model_id, voice_id, settings, CLI 1.7.1, seed, minutes | PASS 2026-11-01 |
+| Ahmed signs `decision.md`; STATUS updated with minutes | PASS 2026-11-01 — 4.8 call-min, 6,250 / 40,000 characters |
 
 ## What was produced in 0a
 

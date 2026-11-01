@@ -34,13 +34,12 @@ def test_tts_scorer_selftest():
         assert tts_score._selftest() == 0
 
 
-def test_stt_results_template_is_blank_10x2():
+def test_stt_results_sheet_is_10x2_per_provider():
+    # The sheet holds live results since 2026-11-01; check its shape, not that it is blank.
     rows = stt_score.read_rows(REPO / "docs" / "phase0" / "stt_results.csv")
-    assert len(rows) == 20 and len({r["id"] for r in rows}) == 10
+    providers = {r["asr_provider"] for r in rows}
+    assert len(rows) == 20 * len(providers) and len({r["id"] for r in rows}) == 10
     assert {r["speaker"] for r in rows} == {"S1", "S2"}
-    for r in rows:
-        for col in ("conversation_id", "transcript_heard", "entities_correct", "intent_ok"):
-            assert not r[col].strip(), f"template row {r['id']}/{r['speaker']} has a filled {col}"
     # expected phone/order digits agree with the utterances (the #5 fix)
     for r in rows:
         ents = stt_score.parse_entities(r["critical_entities"])
